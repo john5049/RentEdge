@@ -1,0 +1,61 @@
+2025-04-18T01:39:03.018999Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-04-18T01:39:03.093723Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 39508
+2025-04-18T01:39:03.119405Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-04-18T01:39:03.336385Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-04-18T01:39:03.557295Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-04-18T01:39:03.557677Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-04-18T01:39:03.579859Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3000  MySQL Community Server - GPL.
+2025-04-18T01:39:03.579948Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-04-18T01:47:42.850312Z 0 [System] [MY-013105] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Normal shutdown.
+2025-04-18T01:47:43.217840Z 0 [System] [MY-010910] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Shutdown complete (mysqld 9.3.0)  MySQL Community Server - GPL.
+2025-04-18T01:47:43.218273Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+2025-04-18T01:47:44.130394Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-04-18T01:47:44.202662Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 29480
+2025-04-18T01:47:44.232628Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-04-18T01:47:44.438371Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-04-18T01:47:44.622925Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-04-18T01:47:44.623096Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-04-18T01:47:44.644081Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3306  MySQL Community Server - GPL.
+2025-04-18T01:47:44.644125Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-04-21T15:15:59.836567Z 0 [System] [MY-013105] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Normal shutdown.
+2025-04-21T15:16:00.787055Z 0 [System] [MY-010910] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Shutdown complete (mysqld 9.3.0)  MySQL Community Server - GPL.
+2025-04-21T15:16:00.787491Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+2025-04-21T15:16:29.553228Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-04-21T15:16:29.691159Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 5460
+2025-04-21T15:16:29.716933Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-04-21T15:16:29.963110Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-04-21T15:16:30.267557Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-04-21T15:16:30.267722Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-04-21T15:16:30.294901Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-04-21T15:16:30.294881Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3306  MySQL Community Server - GPL.
+2025-04-23T07:44:12.385110Z 0 [System] [MY-013105] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Normal shutdown.
+2025-04-23T07:44:12.935059Z 0 [System] [MY-010910] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: Shutdown complete (mysqld 9.3.0)  MySQL Community Server - GPL.
+2025-04-23T07:44:12.935366Z 0 [System] [MY-015016] [Server] MySQL Server - end.
+2025-04-23T07:44:39.104239Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-04-23T07:44:39.291696Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 6016
+2025-04-23T07:44:39.329873Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-04-23T07:44:39.579197Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-04-23T07:44:39.814089Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-04-23T07:44:39.814266Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-04-23T07:44:39.842976Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-04-23T07:44:39.843013Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3306  MySQL Community Server - GPL.
+2025-04-28T19:19:11.073528Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-04-28T19:19:11.227865Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 5320
+2025-04-28T19:19:11.265393Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-04-28T19:19:11.868538Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-04-28T19:19:12.017113Z 0 [System] [MY-010229] [Server] Starting XA crash recovery...
+2025-04-28T19:19:12.020027Z 0 [System] [MY-010232] [Server] XA crash recovery finished.
+2025-04-28T19:19:12.100272Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-04-28T19:19:12.100450Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-04-28T19:19:12.123868Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-04-28T19:19:12.123901Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3306  MySQL Community Server - GPL.
+2025-05-04T11:41:27.770117Z 0 [System] [MY-015015] [Server] MySQL Server - start.
+2025-05-04T11:41:27.888201Z 0 [System] [MY-010116] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe (mysqld 9.3.0) starting as process 4748
+2025-05-04T11:41:27.924145Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-05-04T11:41:28.544917Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-05-04T11:41:28.692659Z 0 [System] [MY-010229] [Server] Starting XA crash recovery...
+2025-05-04T11:41:28.695620Z 0 [System] [MY-010232] [Server] XA crash recovery finished.
+2025-05-04T11:41:28.768947Z 0 [Warning] [MY-010068] [Server] CA certificate ca.pem is self signed.
+2025-05-04T11:41:28.769115Z 0 [System] [MY-013602] [Server] Channel mysql_main configured to support TLS. Encrypted connections are now supported for this channel.
+2025-05-04T11:41:28.796251Z 0 [System] [MY-011323] [Server] X Plugin ready for connections. Bind-address: '::' port: 33060
+2025-05-04T11:41:28.796232Z 0 [System] [MY-010931] [Server] C:\Program Files\MySQL\MySQL Server 9.3\bin\mysqld.exe: ready for connections. Version: '9.3.0'  socket: ''  port: 3306  MySQL Community Server - GPL.

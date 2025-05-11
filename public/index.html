@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users List</title>
+</head>
+<body>
+  <h1>Users</h1>
+  <ul id="userList"></ul>
+
+  <script>
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(users => {
+        const list = document.getElementById('userList');
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = `${user.name} (ID: ${user.id})`;
+          list.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching users:', err);
+      });
+  </script>
+</body>
+</html>
