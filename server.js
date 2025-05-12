@@ -10,10 +10,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: 'mysql://root:LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl@shuttle.proxy.rlwy.net:45386/railway',
+  host: 'shuttle.proxy.rlwy.net',
   user: 'root',
-  password: 'pass',
-  database: 'mydb'
+  password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
+  database: 'railway',
+  port: 45386
 });
 
 //app.get('/', (req, res) => {
