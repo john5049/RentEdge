@@ -191,7 +191,7 @@ app.get('/properties', (req, res) => {
   });
 });
 
-app.delete('/delete-users', (req, res) => {
+    app.delete('/delete-users', (req, res) => {
     const userIds = req.body.userIds; // array of IDs
   
     if (!Array.isArray(userIds) || userIds.length === 0) {
@@ -244,6 +244,10 @@ app.delete('/delete-users', (req, res) => {
       res.status(500).json({ error: 'Failed to delete property' });
     }
   });
+
+app.get('/', (req, res) => {
+res.send('✅ RentEdge server is running!');
+});
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
