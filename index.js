@@ -85,24 +85,23 @@ app.post('/submit-user', async (req, res) => {
 
 // Login Route
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-  
-    db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
-      if (err) return res.status(500).send('Server error');
-      if (results.length === 0) return res.status(401).json({ error: 'User not found'});
-  
-      const user = results[0];
-      console.log("My user is:" + user.id + user.username);
-      const match = await bcrypt.compare(password, user.password);
-  
-      if (match) {
-        //res.send('Login successful from:' + user.id);
-        return res.json({ id: user.id, username: user.username });
-      } else {
-        return res.status(401).json('Incorrect password');
-      }
-    });
+  const { username, password } = req.body;
+
+  db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
+    if (err) return res.status(500).json({ error: 'Server error' });
+    if (results.length === 0) return res.status(401).json({ error: 'User not found' });
+
+    const user = results[0];
+    console.log("My user is:", user.id, user.username);
+    const match = await bcrypt.compare(password, user.password);
+
+    if (match) {
+      return res.json({ id: user.id, username: user.username });
+    } else {
+      return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
+    }
   });
+});
 
 // Logout Route
 app.get('/logout', (req, res) => {
