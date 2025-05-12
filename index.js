@@ -9,7 +9,7 @@ const app = express();
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 
 
