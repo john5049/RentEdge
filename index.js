@@ -53,8 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'supersecret',
   resave: false,
-  saveUninitialized: false,
-  store: sessionStore,
+  saveUninitialized: false
 }))
 
 app.use(express.json());
