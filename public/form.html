@@ -1,0 +1,48 @@
+<!-- public/form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Form</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+</head>
+<body>
+  <h1>Add User</h1>
+  <form id="userForm" action="/submit-user" method="POST">
+    <label>Username:</label><br>
+    <input type="text" name="username" required><br>
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br><br>
+    <button type="submit" style="padding: 10px 20px; border-radius: 8px; background-color:dimgrey; color: white; border: none; cursor: pointer;">Submit</button>
+    <div style="width: 20px;"></div>
+    
+  </form>
+
+</body>
+
+<script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', () => {
+        setTimeout(() => form.reset(), 100);
+    })
+</script>
+
+<br><br>
+<a href="/manage-users.html">
+  <button type="button" style="padding: 10px 20px; border-radius: 8px; background-color: green; color: white; border: none; cursor: pointer;">Manage Users</button>
+</a>
+
+<br><br>
+<!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<div id="plotlyChart"></div> -->
+
+<!-- <script>
+  const data = [{
+    x: [1, 2, 3],
+    y: [2, 6, 3],
+    type: 'line'
+  }];
+
+  Plotly.newPlot('plotlyChart', data);
+</script> -->
+
+</html>

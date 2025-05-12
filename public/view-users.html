@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Users</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+</head>
+<body>
+  <h1>Registered Users</h1>
+  <ul id="userList"></ul>
+
+  <script>
+    async function fetchUsers() {
+      try {
+        const res = await fetch('/users'); // Calls your backend route
+        const users = await res.json();
+
+        const list = document.getElementById('userList');
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = `${user.username} (${user.email})`;
+          list.appendChild(li);
+        });
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      }
+    }
+
+    fetchUsers();
+  </script>
+</body>
+</html>

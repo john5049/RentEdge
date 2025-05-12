@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+</head>
+<body>
+  <h1>Register</h1>
+  <form id="registerForm">
+    <label style="font-size: 20px; font-style: italic;">Username:</label><br />
+    <input style="width: 300px; height: 40px; font-size: 22px;" type="text" name="username" required /><br />
+    <label style="font-size: 20px;font-style: italic;">Email:</label><br />
+    <input style="font-size: 22px; width: 300px; height: 40px; font-style: italic;" type="email"name="email" required /><br />
+    <label style="font-size: 20px;font-style: italic;">Password:</label><br />
+    <input style="font-size: 22px; width: 300px; height: 40px; font-style: italic;" type="password" name="password" required /><br /><br />
+    <button style="font-size: 22; width: 100px; height: 40px;" type="submit">Register</button>
+  </form>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const username = form.username.value;
+      const email = form.email.value;
+      const password = form.password.value;
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username, email, password })
+      });
+
+      const msg = await res.text();
+      alert(msg);
+      form.reset();
+    });
+  </script>
+</body>
+
+<br><br>
+<a href="/form.html">
+  <button type="button" style="padding: 10px 20px; border-radius: 8px; background-color: green; color: white; border: none; cursor: pointer;">Home</button>
+</a>
+
+</html>

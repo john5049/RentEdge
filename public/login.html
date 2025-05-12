@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+</head>
+
+<style>
+  body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .dashboard-container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .login-button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .login-button:hover {
+      background-color: blue;
+    }
+</style>
+
+<body style="background-color:aliceblue;">
+  <div class="dashboard-container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <label>Username:</label><br />
+      <input type="text" name="username" required /><br />
+      <label>Password:</label><br />
+      <input type="password" name="password" required /><br /><br />
+      <button class="login-button" type="submit">Login</button>
+    </form>
+  </div>
+  
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const username = form.username.value;
+      const password = form.password.value;
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username, password })
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        // Store the user ID in session Storage
+        sessionStorage.setItem('userId', result.id);
+        sessionStorage.setItem('userName', result.username);
+
+        // Redirect to Dashboard
+        window.location.href = '/dashboard.html';
+      } else {
+        alert(`Login failed: ${result.error}`);
+      }
+      //alert(result);
+      
+    });
+  </script>
+</body>
+</html>

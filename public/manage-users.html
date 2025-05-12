@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Users</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+</head>
+<body>
+  <h1>Manage Users</h1>
+  <form id="userForm">
+    <div id="userList" style="display: flex; flex-direction: column; gap: 10px"></div>
+    <button type="submit"style="padding: 10px 20px; border-radius: 8px; background-color: gray; color: white; border: none; cursor: pointer;">Delete Selected</button>
+  </form>
+
+  <script>
+    async function loadUsers() {
+      const res = await fetch('/users');
+      const users = await res.json();
+      const div = document.getElementById('userList');
+      div.innerHTML = '';
+      //list.innerHTML = '';
+
+      users.forEach(user => {
+        const card = document.createElement('div');
+        card.style = 'border: 1px solid #ddd; padding: 10px; border-radius: 10px; background: #fefefe; display: flex; align-items: center; gap: 10px;';
+        card.innerHTML = `
+          <input type="checkbox" name="userIds" value="${user.id}">
+        <div>
+        <strong>${user.username}</strong><br>
+        <small>${user.email}</small>
+        </div>
+        `;
+        div.appendChild(card);
+      });
+    }
+
+    document.getElementById('userForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const selected = Array.from(document.querySelectorAll('input[name="userIds"]:checked'))
+                            .map(input => input.value);
+
+      if (selected.length === 0) {
+        alert('Please select at least one user to delete.');
+        return;
+      }
+
+      const res = await fetch('/delete-users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userIds: selected })
+      });
+
+      const msg = await res.text();
+      alert(msg);
+      loadUsers(); // refresh list
+    });
+
+    loadUsers(); // initial load
+  </script>
+</body>
+
+<br><br>
+<a href="/form.html">
+  <button type="button" style="padding: 10px 20px; border-radius: 8px; background-color: green; color: white; border: none; cursor: pointer;">Home</button>
+</a>
+
+</html>
