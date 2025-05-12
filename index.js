@@ -254,7 +254,8 @@ app.get('/properties', (req, res) => {
   });
 
 app.get('/', (req, res) => {
-res.send('✅ RentEdge server is running!');
+//res.send('✅ RentEdge server is running!');
+res.redirect('/login.html'); // Or your login/landing page
 });
 
 app.get('/users', (req, res) => {
