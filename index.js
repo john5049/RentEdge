@@ -39,13 +39,21 @@ db.connect(err => {
 });
 
 // Session store
-const sessionStore = new MySQLStore({
-  host: 'shuttle.proxy.rlwy.net',
-  port: 45386,
-  user: 'root',
-  password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
-  database: 'railway',
+let sessionStore;
+try{
+    sessionStore = new MySQLStore({
+    host: 'shuttle.proxy.rlwy.net',
+    port: 45386,
+    user: 'root',
+    password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
+    database: 'railway',
 });
+console.log('✅ Session store connected');
+}
+catch (err) {
+console.error('❌ Failed to set up session store:', err);
+}
+
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,7 +61,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'supersecret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: sessionStore || undefined,
 }))
 
 app.use(express.json());
