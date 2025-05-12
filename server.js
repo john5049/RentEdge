@@ -10,7 +10,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: '127.0.0.1',
+  host: 'mysql://root:LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl@shuttle.proxy.rlwy.net:45386/railway',
   user: 'root',
   password: 'pass',
   database: 'mydb'
