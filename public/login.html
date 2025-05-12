@@ -66,31 +66,32 @@
 
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const username = form.username.value;
-      const password = form.password.value;
+    e.preventDefault();
+    const form = e.target;
+    const username = form.username.value;
+    const password = form.password.value;
 
+    try {
       const res = await fetch('/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username, password })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
       });
 
       const result = await res.json();
+
       if (res.ok) {
-        // Store the user ID in session Storage
         sessionStorage.setItem('userId', result.id);
         sessionStorage.setItem('userName', result.username);
-
-        // Redirect to Dashboard
         window.location.href = '/dashboard.html';
       } else {
         alert(`Login failed: ${result.error}`);
       }
-      //alert(result);
-      
-    });
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      alert('Something went wrong. Please try again.');
+    }
+  });
   </script>
 </body>
 </html>

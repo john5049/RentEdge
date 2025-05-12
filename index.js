@@ -89,7 +89,7 @@ app.post('/login', (req, res) => {
   
     db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
       if (err) return res.status(500).send('Server error');
-      if (results.length === 0) return res.status(401).send('User not found');
+      if (results.length === 0) return res.status(401).json({ error: 'User not found'});
   
       const user = results[0];
       console.log("My user is:" + user.id + user.username);
@@ -97,9 +97,9 @@ app.post('/login', (req, res) => {
   
       if (match) {
         //res.send('Login successful from:' + user.id);
-        res.json({ id: user.id, username: user.username });
+        return res.json({ id: user.id, username: user.username });
       } else {
-        res.status(401).send('Incorrect password');
+        return res.status(401).json('Incorrect password');
       }
     });
   });
