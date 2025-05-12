@@ -11,32 +11,16 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const PORT = process.env.PORT || 3000;
 
-const db = new MySQLStore({
-  host: 'shuttle.proxy.rlwy.net',
-  port: 45386,
-  user: 'root',
-  password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
-  database: 'railway',
-});
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  secret: 'supersecret',
-  resave: false,
-  saveUninitialized: false,
-  store: db,
-}))
 
 // DB connection
-/* const db = mysql.createConnection({
+const db = mysql.createConnection({
   host: 'shuttle.proxy.rlwy.net',
   user: 'root',
   password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
   database: 'railway',
   port: 45386
-}); */
+});
 
 db.connect(err => {
   if (err) throw err;
@@ -53,6 +37,25 @@ db.connect(err => {
     //result.send('✅ User saved successfully!');
   }); */
 });
+
+// Session store
+const sessionStore = new MySQLStore({
+  host: 'shuttle.proxy.rlwy.net',
+  port: 45386,
+  user: 'root',
+  password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
+  database: 'railway',
+});
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'supersecret',
+  resave: false,
+  saveUninitialized: false,
+  store: sessionStore,
+}))
 
 app.use(express.json());
 
