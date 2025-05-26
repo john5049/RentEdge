@@ -117,7 +117,7 @@ app.get('/logout', (req, res) => {
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
-    return res.status(400).send('All fields are required');
+    return res.status(400).json('All fields are required');
   }
 
   try {
@@ -129,13 +129,13 @@ app.post('/register', async (req, res) => {
     db.query(sql, [username, email, hashedPassword], (err) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Registration failed');
+        return res.status(500).json('Registration failed');
       }
-      res.send('User registered successfully!');
+      res.json('User registered successfully!');
     });
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).json('Server error');
   }
 });
 
