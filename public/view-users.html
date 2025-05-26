@@ -12,6 +12,11 @@
     async function fetchUsers() {
       try {
         const res = await fetch('/users'); // Calls your backend route
+        // Check if response is OK
+        if (!res.ok) {
+          const message = await response.text(); // fallback for plain error
+          throw new Error(message);
+        }
         const users = await res.json();
 
         const list = document.getElementById('userList');

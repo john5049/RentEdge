@@ -94,7 +94,7 @@ app.post('/login', (req, res) => {
     const user = results[0];
     console.log("My user is:", user.id, user.username);
     const match = await bcrypt.compare(password, user.password);
-
+    console.log(match);
     if (match) {
       return res.json({ id: user.id, username: user.username });
     } else {
@@ -262,7 +262,7 @@ app.get('/users', (req, res) => {
     db.query(sql, (err, results) => {
       if (err) {
         console.error(err);
-        return res.status(500).send('Database error');
+        return res.status(500).json('Database error');
       }
       res.json(results); // Send users as JSON
     });
