@@ -14,29 +14,18 @@ const PORT = process.env.PORT;
 
 
 // DB connection
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: 'shuttle.proxy.rlwy.net',
   user: 'root',
   password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
   database: 'railway',
-  port: 45386
+  port: 45386,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('✅ Connected to MySQL');
-  //const username = 'John';
-  //const email = 'John@akridgeenterprises.com';
-
-  //const sqls = 'INSERT INTO users (username, email) VALUES (?, ?)';
-  /* db.query(sqls, [username, email], (err, result) => {
-    if (err) {
-      console.error('❌ DB Error:', err);
-      return res.status(500).send('Error saving user');
-    }
-    //result.send('✅ User saved successfully!');
-  }); */
-});
+console.log('✅ MySQL connection pool created');
 
 // Session store
 let sessionStore;
