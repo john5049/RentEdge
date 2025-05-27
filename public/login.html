@@ -3,14 +3,73 @@
 <head>
   <title>Login</title>
   <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
-</head>
-
-<style>
-  body {
+  <style>
+    body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f5f7fa;
       margin: 0;
       padding: 0;
+    }
+
+    /* Navbar styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1e90ff;
+      color: white;
+      padding: 15px 30px;
+      font-size: 20px;
+    }
+
+    .navbar-left {
+      font-weight: bold;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropbtn {
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      right: 0;
+    }
+
+    .dropdown-content a,
+    .dropdown-content button.logout-link {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      background: none;
+      border: none;
+      text-align: left;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .dropdown-content a:hover,
+    .dropdown-content button.logout-link:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
     }
 
     .dashboard-container {
@@ -29,9 +88,22 @@
       margin-bottom: 20px;
     }
 
-    p {
+    label {
       font-size: 18px;
-      color: #555;
+      font-style: italic;
+      display: block;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
     }
 
     .login-button {
@@ -47,56 +119,84 @@
     }
 
     .login-button:hover {
-      background-color: blue;
+      background-color: darkblue;
     }
-</style>
 
-<body style="background-color:aliceblue;">
+    .register-link {
+      margin-top: 20px;
+      display: block;
+      font-size: 16px;
+    }
+
+    .register-link a {
+      color: #1e90ff;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="navbar-left">🏠 RentWise</div>
+    <div class="navbar-right">
+      <div class="dropdown">
+        <button class="dropbtn">Menu ▾</button>
+        <div class="dropdown-content">
+          <a href="/dashboard.html">Dashboard</a>
+          <form id="logout-form" action="/logout" method="GET" style="margin: 0;">
+            <button type="submit" class="logout-link">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="dashboard-container">
     <h1>Login</h1>
     <form id="loginForm">
-      <label>Username:</label><br />
-      <input type="text" name="username" required /><br />
-      <label>Password:</label><br />
-      <input type="password" name="password" required /><br /><br />
+      <label>Username:</label>
+      <input type="text" name="username" required />
+      <label>Password:</label>
+      <input type="password" name="password" required />
       <button class="login-button" type="submit">Login</button>
-
-      <p style="margin-top: 20px;">
-        Not a member? 
-        <a href="/register.html" style="color: blue; text-decoration: underline;">Register here</a>
-      </p>
     </form>
+    <div class="register-link">
+      Not a member? <a href="/register.html">Register here</a>
+    </div>
   </div>
-  
 
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const username = form.username.value;
-    const password = form.password.value;
+      e.preventDefault();
+      const form = e.target;
+      const username = form.username.value;
+      const password = form.password.value;
 
-    try {
-      const res = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
 
-      const result = await res.json();
+        const result = await res.json();
 
-      if (res.ok) {
-        sessionStorage.setItem('userId', result.id);
-        sessionStorage.setItem('userName', result.username);
-        window.location.href = '/dashboard.html';
-      } else {
-        alert(`Login failed: ${result.error}`);
+        if (res.ok) {
+          sessionStorage.setItem('userId', result.id);
+          sessionStorage.setItem('userName', result.username);
+          window.location.href = '/dashboard.html';
+        } else {
+          alert(`Login failed: ${result.error}`);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        alert('Something went wrong. Please try again.');
       }
-    } catch (err) {
-      console.error('Unexpected error:', err);
-      alert('Something went wrong. Please try again.');
-    }
-  });
+    });
   </script>
 </body>
 </html>
