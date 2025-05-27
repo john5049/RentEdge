@@ -11,7 +11,14 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const PORT = process.env.PORT;
 
-
+// Create the transporter (move this to the top of your file ideally)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'john@akridgeenterprises.com',
+    pass: 'kdigndhcupbaazpb'
+  }
+});
 
 // DB connection
 const db = mysql.createPool({
@@ -103,6 +110,8 @@ app.get('/logout', (req, res) => {
 });
 
 // Registration Route
+const nodemailer = require('nodemailer');
+
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
@@ -110,16 +119,32 @@ app.post('/register', async (req, res) => {
   }
 
   try {
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert into MySQL
     const sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+
     db.query(sql, [username, email, hashedPassword], (err) => {
       if (err) {
         console.error(err);
         return res.status(500).json('Registration failed');
       }
+
+      // ✅ Send welcome email after successful insert
+      const mailOptions = {
+        from: '"RentWise" <john@akridgeenterprises.com>',
+        to: email,
+        subject: 'Welcome to RentWise!',
+        text: `Hi ${username},\n\nThanks for signing up with RentWise! You can now log in and start managing your properties.\n\n🏠 RentWise Team`,
+      };
+
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error('❌ Email send failed:', err);
+          // You can choose whether to send a 500 or still return success
+        } else {
+          console.log('✅ Email sent:', info.response);
+        }
+      });
+
       res.json('User registered successfully!');
     });
   } catch (err) {
