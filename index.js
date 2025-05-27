@@ -11,6 +11,8 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const PORT = process.env.PORT;
 
+const nodemailer = require('nodemailer');
+
 // Create the transporter (move this to the top of your file ideally)
 const transporter = nodemailer.createTransport({
   service: 'gmail',
