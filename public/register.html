@@ -4,18 +4,109 @@
   <meta charset="UTF-8" />
   <title>Register</title>
   <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 18px;
+      font-style: italic;
+      color: #333;
+      display: block;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    .register-button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: blue;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .register-button:hover {
+      background-color: darkblue;
+    }
+
+    .home-link {
+      display: block;
+      margin: 30px auto 0;
+      text-align: center;
+    }
+
+    .home-link button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .home-link button:hover {
+      background-color: darkgreen;
+    }
+  </style>
 </head>
 <body>
-  <h1>Register</h1>
-  <form id="registerForm">
-    <label style="font-size: 20px; font-style: italic;">Username:</label><br />
-    <input style="width: 300px; height: 40px; font-size: 22px;" type="text" name="username" required /><br />
-    <label style="font-size: 20px;font-style: italic;">Email:</label><br />
-    <input style="font-size: 22px; width: 300px; height: 40px; font-style: italic;" type="email"name="email" required /><br />
-    <label style="font-size: 20px;font-style: italic;">Password:</label><br />
-    <input style="font-size: 22px; width: 300px; height: 40px; font-style: italic;" type="password" name="password" required /><br /><br />
-    <button style="font-size: 22; width: 100px; height: 40px;" type="submit">Register</button>
-  </form>
+  <div class="container">
+    <h1>Register</h1>
+    <form id="registerForm">
+      <label for="username">Username:</label>
+      <input type="text" name="username" required />
+
+      <label for="email">Email:</label>
+      <input type="email" name="email" required />
+
+      <label for="password">Password:</label>
+      <input type="password" name="password" required />
+
+      <button class="register-button" type="submit">Register</button>
+    </form>
+  </div>
+
+  <div class="home-link">
+    <a href="/form.html">
+      <button type="button">Home</button>
+    </a>
+  </div>
 
   <script>
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
@@ -25,22 +116,21 @@
       const email = form.email.value;
       const password = form.password.value;
 
-      const res = await fetch('/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username, email, password })
-      });
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ username, email, password })
+        });
 
-      const msg = await res.text();
-      alert(msg);
-      form.reset();
+        const msg = await res.text();
+        alert(msg);
+        form.reset();
+      } catch (err) {
+        console.error('Registration failed:', err);
+        alert('An error occurred. Please try again.');
+      }
     });
   </script>
 </body>
-
-<br><br>
-<a href="/form.html">
-  <button type="button" style="padding: 10px 20px; border-radius: 8px; background-color: green; color: white; border: none; cursor: pointer;">Home</button>
-</a>
-
 </html>
