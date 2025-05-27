@@ -112,8 +112,6 @@ app.get('/logout', (req, res) => {
 });
 
 // Registration Route
-const nodemailer = require('nodemailer');
-
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
