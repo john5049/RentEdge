@@ -98,6 +98,9 @@
       <label for="password">Password:</label>
       <input type="password" name="password" required />
 
+      <label for="confirmPassword">Confirm Password:</label>
+      <input type="password" name="confirmPassword" required />
+
       <button class="register-button" type="submit">Register</button>
     </form>
   </div>
@@ -115,6 +118,12 @@
       const username = form.username.value;
       const email = form.email.value;
       const password = form.password.value;
+      const confirmPassword = form.confirmPassword.value;
+
+      if (password !== confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+      }
 
       try {
         const res = await fetch('/register', {
