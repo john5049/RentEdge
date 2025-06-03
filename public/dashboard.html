@@ -307,62 +307,6 @@ editBtn.style.cursor = 'pointer';
 
 let isEditing = false;
 
-// Attempt to get access token from USPS
-const fetch = require('node-fetch');
-
-const client_id = 'YOUR_CLIENT_ID';
-const client_secret = 'YOUR_CLIENT_SECRET';
-
-async function getAccessToken() {
-  const response = await fetch('https://api.usps.com/oauth2/v3/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      client_id,
-      client_secret,
-      grant_type: 'client_credentials'
-    })
-  });
-
-  const data = await response.json();
-  return data.access_token;
-}
-
-async function validateAddress(accessToken) {
-  const addressData = {
-    address: {
-      street: '6406 Ivy Lane',
-      city: 'Greenbelt',
-      state: 'MD',
-      zipCode: '20770'
-    }
-  };
-
-  const response = await fetch('https://api.usps.com/v1/addresses/validate', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(addressData)
-  });
-
-  const data = await response.json();
-  return data;
-}
-
-(async () => {
-  try {
-    const token = await getAccessToken();
-    const validatedAddress = await validateAddress(token);
-    console.log('Validated Address:', validatedAddress);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-})();
-
 editBtn.onclick = async () => {
   if (!isEditing) {
     const input = document.createElement('input');
