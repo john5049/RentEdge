@@ -505,8 +505,6 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
   }
   }
 
-  const uspsUserId = "john5049AE"; // Replace with your real USPS Web Tools ID
-
     input.addEventListener("input", async () => {
     const query = input.value;
     if (query.length < 3) {
@@ -524,21 +522,10 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
       li.style.padding = "8px";
       li.style.cursor = "pointer";
       li.style.borderBottom = "1px solid #eee";
-      li.onclick = async () => {
+      li.onclick = () => {
         input.value = feature.properties.formatted;
         suggestionsList.innerHTML = "";
         suggestionsList.style.display = "none";
-
-        const address2 = feature.properties.address_line1 || feature.properties.street || "";
-        const city = feature.properties.city || "";
-        const state = feature.properties.state || "";
-
-        const corrected = await validateWithUSPS(address2, city, state);
-
-        if (corrected) {
-          input.value = `${corrected.address2}, ${corrected.city}, ${corrected.state} ${corrected.zip5}`;
-          console.log('USPS corrected the address!');
-        }
       };
       suggestionsList.appendChild(li);
     });
@@ -554,47 +541,6 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
     suggestionsList.style.display = "none"; // Hide suggestions when clicking outside
   }
 });
-
-// USPS Address Validation Function
-async function validateWithUSPS(address2, city, state) {
-  const xml = `
-    <AddressValidateRequest USERID="${uspsUserId}">
-      <Revision>1</Revision>
-      <Address ID="0">
-        <Address1></Address1>
-        <Address2>${address2}</Address2>
-        <City>${city}</City>
-        <State>${state}</State>
-        <Zip5></Zip5>
-        <Zip4></Zip4>
-      </Address>
-    </AddressValidateRequest>
-  `;
-
-  const url = `https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&XML=${encodeURIComponent(xml)}`;
-
-  try {
-    const response = await fetch(url);
-    const text = await response.text();
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(text, "text/xml");
-
-    if (xmlDoc.querySelector("Error")) {
-      console.warn("USPS Address Error:", xmlDoc.querySelector("Description").textContent);
-      return null;
-    }
-
-    return {
-      address2: xmlDoc.querySelector("Address2")?.textContent || "",
-      city: xmlDoc.querySelector("City")?.textContent || "",
-      state: xmlDoc.querySelector("State")?.textContent || "",
-      zip5: xmlDoc.querySelector("Zip5")?.textContent || "",
-    };
-  } catch (err) {
-    console.error("USPS validation failed:", err);
-    return null;
-  }
-}
 
   // Fetch Zillow API data - rent Zestimate and Zestimate
   async function fetchZillowData(zpid) {
