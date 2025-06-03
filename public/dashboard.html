@@ -512,6 +512,8 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
       return;
     }
 
+    await UspsAuth();
+
     const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&limit=10&apiKey=${apiKey}`);
     const data = await response.json();
 
@@ -541,6 +543,23 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
     suggestionsList.style.display = "none"; // Hide suggestions when clicking outside
   }
 });
+
+async function UspsAuth() {
+
+  fetch("https://apis.usps.com/oauth2/v3/token", {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    data: {
+      client_id: 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg',
+      client_secret: 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto',
+      grant_type: 'client_credentials'
+    }
+  
+})
+
+}
 
   // Fetch Zillow API data - rent Zestimate and Zestimate
   async function fetchZillowData(zpid) {
