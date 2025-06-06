@@ -103,8 +103,9 @@
 
 .dashboard-layout {
 display: flex;
-gap: 0px; /* Space between containers */
-padding: 20px;
+  flex-wrap: wrap; /* ✅ allow children to stack */
+  gap: 20px;        /* better spacing */
+  padding: 20px;
 }
 
 .properties-container {
@@ -116,12 +117,13 @@ padding: 20px;
   border-radius: 10px;
 }
 .analytics-container {
-  flex: 1; /* Equal width; adjust if you want one wider */
-  max-height: 600px; /* Example height */
+  flex: 1 1 100%; /* ✅ grow and shrink; take full width on small screens */
+  max-height: 600px;
   overflow-y: auto;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 10px;
+  box-sizing: border-box;
 }
 
     /* Custom Scrollbar Styling */
