@@ -423,6 +423,7 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
   async function getAccessToken() {
   const response = await fetch('/token', {method: 'POST'});
   const data = await response.json();
+  console.log('My access key is: ' + data);
   return data.access_token;
 }
 
