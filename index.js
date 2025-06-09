@@ -14,6 +14,8 @@ const PORT = process.env.PORT;
 const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
+const token = null;
+
 // DB connection
 const db = mysql.createPool({
   host: 'shuttle.proxy.rlwy.net',
@@ -74,7 +76,7 @@ app.post('/submit-user', async (req, res) => {
 });
 
 // Login Route
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
   db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
@@ -85,17 +87,20 @@ app.post('/login', async (req, res) => {
     console.log("My user is:", user.id, user.username);
     const match = await bcrypt.compare(password, user.password);
     console.log(match);
-    if (match) {
-      console.log('Attempt to access token');
-      const token = await getAccessToken();
-      console.log('✅ USPS Access Token:', token);
-
-      return res.json({ id: user.id, username: user.username });
+    if (match) {  
+      return res.json({ id: user.id, username: user.username});
     } else {
       return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
     }
   });
 });
+
+// USPS Token Route
+app.post('/token', async (req,res) => {
+      console.log('Attempt to access token');
+      token = await getAccessToken();
+      console.log('✅ USPS Access Token:', token);
+})
 
 // Logout Route
 app.get('/logout', (req, res) => {
