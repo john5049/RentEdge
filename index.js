@@ -14,7 +14,7 @@ const PORT = process.env.PORT;
 const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
-const token = null;
+var token = null;
 
 // DB connection
 const db = mysql.createPool({
