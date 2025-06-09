@@ -87,6 +87,8 @@ app.post('/login', (req, res) => {
     console.log(match);
     if (match) {
       return res.json({ id: user.id, username: user.username });
+      console.log('Attempt to access token');
+      const token = await getAccessToken();
     } else {
       return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
     }
@@ -246,6 +248,29 @@ app.get('/', (req, res) => {
 //res.send('✅ RentEdge server is running!');
 res.redirect('/login.html'); // Or your login/landing page
 });
+
+async function getAccessToken() {
+  const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      client_id,
+      client_secret,
+      grant_type: 'client_credentials'
+    }).toString()
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || !data.access_token) {
+    throw new Error(`Failed to get token: ${JSON.stringify(data)}`);
+  }
+
+  console.log('✅ Access token received');
+  return data.access_token;
+}
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
