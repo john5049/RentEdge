@@ -421,23 +421,8 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
 
   // Get OAuth token
   async function getAccessToken() {
-  const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      client_id,
-      client_secret,
-      grant_type: 'client_credentials'
-    })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok || !data.access_token) {
-    throw new Error(`Failed to get token: ${JSON.stringify(data)}`);
-  }
-
-  console.log('✅ Access token received');
+  const response = await fetch('/api/usps-token', {method: 'POST'});
+  const data = await response.json();
   return data.access_token;
 }
 

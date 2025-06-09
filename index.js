@@ -11,7 +11,14 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const PORT = process.env.PORT;
 
+const router = express.Router();
+require('dotenv').config();
 
+const uspsRoutes = require('./routes/usps');
+app.use('/api', uspsRoutes);
+
+const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
+const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
 // DB connection
 const db = mysql.createPool({
@@ -245,6 +252,30 @@ app.get('/', (req, res) => {
 //res.send('✅ RentEdge server is running!');
 res.redirect('/login.html'); // Or your login/landing page
 });
+
+// Get token from usps
+router.post('/usps-token', async (req, res) => {
+  const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id,
+      client_secret,
+      grant_type: 'client_credentials'
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || !data.access_token) {
+    throw new Error(`Failed to get token: ${JSON.stringify(data)}`);
+  }
+
+  console.log('✅ Access token received');
+  return data.access_token;
+});
+
+module.exports = router;
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
