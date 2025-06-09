@@ -260,6 +260,11 @@ display: flex;
     const username = sessionStorage.getItem('userName');
     const userId = sessionStorage.getItem('userId');
 
+    const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
+    const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
+
+    const token = null;
+
     if (!userId) {
       // No login found — redirect back to login
       window.location.href = '/login.html';
@@ -395,6 +400,10 @@ editBtn.onclick = async () => {
   }
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    token = getAccessToken();
+  });
+
 document.getElementById('file-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
     console.log(file);
@@ -409,6 +418,52 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
 
     reader.readAsText(file);
   });
+
+  // Get OAuth token
+  async function getAccessToken() {
+  const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      client_id,
+      client_secret,
+      grant_type: 'client_credentials'
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok || !data.access_token) {
+    throw new Error(`Failed to get token: ${JSON.stringify(data)}`);
+  }
+
+  console.log('✅ Access token received');
+  return data.access_token;
+}
+
+// Validate address
+async function validateAddress(token, {streetAddress, city, state}) {
+  const params = new URLSearchParams({
+    streetAddress : streetAddress,
+    city: city,
+    state: state
+  });
+
+  const res = await fetch(`https://apis.usps.com/addresses/v3/address?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(`Address API failed: ${JSON.stringify(data)}`);
+  }
+
+  return data;
+}
 
   async function processCSV(text) {
     const lines = text.trim().split('\n');
@@ -577,6 +632,7 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
 
   async function addProperty() {
     const propertyAddress = input.value.trim();
+    consol.log('My property address is: ' + propertyAddress);
 
   if (propertyAddress) {
     try {
@@ -584,7 +640,11 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
 
       if (!zpid) {
         // If zpid fetching failed, prompt the user
-        zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
+
+        // Instead of prompting user to input the ZPID, let's see if the USPS API can provide the correct address.
+        const uspsAdr = await validateAddress(token, propertyAddress);
+
+        //zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
 
         // If user cancels or doesn't enter anything
         if (!zpid) {
