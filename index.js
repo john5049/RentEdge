@@ -74,7 +74,7 @@ app.post('/submit-user', async (req, res) => {
 });
 
 // Login Route
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   db.query('SELECT * FROM users WHERE username = ?', [username], async (err, results) => {
@@ -86,9 +86,11 @@ app.post('/login', (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     console.log(match);
     if (match) {
-      return res.json({ id: user.id, username: user.username });
       console.log('Attempt to access token');
       const token = await getAccessToken();
+      console.log('✅ USPS Access Token:', token);
+
+      return res.json({ id: user.id, username: user.username });
     } else {
       return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
     }
