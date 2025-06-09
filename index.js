@@ -254,7 +254,7 @@ res.redirect('/login.html'); // Or your login/landing page
 });
 
 // Get token from usps
-router.post('/usps-token', async (req, res) => {
+app.post('/usps-token', async (req, res) => {
   const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
