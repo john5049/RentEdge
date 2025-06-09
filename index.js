@@ -14,9 +14,6 @@ const PORT = process.env.PORT;
 const router = express.Router();
 require('dotenv').config();
 
-const uspsRoutes = require('./routes/usps');
-app.use('/api', uspsRoutes);
-
 const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
@@ -254,7 +251,7 @@ res.redirect('/login.html'); // Or your login/landing page
 });
 
 // Get token from usps
-app.post('/usps-token', async (req, res) => {
+router.post('/usps-token', async (req, res) => {
   const res = await fetch('https://apis.usps.com/oauth2/v3/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
