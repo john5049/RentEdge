@@ -789,19 +789,28 @@ function createPropertyListItem({ propertyAddress, zpid }) {
   }
 
   function removeCountryFromAddress(address) {
-  // List of country names to remove (you can expand this list as needed)
-  const countries = ["USA", "United States", "United States of America", "Canada", "Mexico", "United Kingdom", "Australia"];
-  
-  // Iterate through the countries array and remove any match from the address
-  let cleanedAddress = address;
+  const countries = [
+    "USA",
+    "United States",
+    "United States of America",
+    "Canada",
+    "Mexico",
+    "United Kingdom",
+    "Australia"
+  ];
+
+  let cleanedAddress = address.trim();
+
+  // Remove country name at end
   countries.forEach(country => {
-    const regex = new RegExp(`,?\\s*${country}$`, "i"); // Match the country at the end of the string
+    const regex = new RegExp(`,?\\s*${country}\\.?$`, "i");
     cleanedAddress = cleanedAddress.replace(regex, "");
   });
-  
-  cleanedAddress = cleanedAddress.replace(/,\s*\d{5}(-\d{4})?$/, "");
 
-  return cleanedAddress;
+  // Remove ZIP code at end (e.g. "31008" or "31008-1234")
+  cleanedAddress = cleanedAddress.replace(/,?\s*\d{5}(-\d{4})?$/, "");
+
+  return cleanedAddress.trim();
 }
 
 async function deleteProperty(propertyId) {
