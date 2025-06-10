@@ -639,8 +639,17 @@ async function validateAddress({ streetAddress, city, state }) {
         console.log('state is: ' + state);
 
         // Instead of prompting user to input the ZPID, let's see if the USPS API can provide the correct address.
-        const uspsAdr = await validateAddress({streetAddress, city, state});
-        console.log('Usps API response: ' + uspsAdr);
+        try{
+            const uspsAdr = await validateAddress({streetAddress, city, state});
+            console.log('USPS Address Validation success:', uspsAdr);
+
+            // Call the fetchZpid method again with the new address:
+            
+
+        } catch (err) {
+          alert('Unable to validate the address. Please enter ZPID manually');
+        }
+        
         //zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
 
         // If user cancels or doesn't enter anything
@@ -745,7 +754,9 @@ function createPropertyListItem({ propertyAddress, zpid }) {
 
   // Function to grab zpid from API
   async function fetchZpid(address) {
+    console.log('Here is my fetchZPID address',address);
     const addrWithoutCountry = removeCountryFromAddress(address);
+    console.log('Here is my fetchZPID address without the country',addrWithoutCountry);
     const apiUrl = `https://api.bridgedataoutput.com/api/v2/pub/parcels?access_token=449866bf79a548efd5cfc5bc544a19e0&address.full=${encodeURIComponent(addrWithoutCountry)}`;
     console.log(apiUrl);
   
