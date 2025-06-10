@@ -754,34 +754,50 @@ function createPropertyListItem({ propertyAddress, zpid }) {
 
   // Function to grab zpid from API
   async function fetchZpid(address) {
-    console.log('Here is my fetchZPID address',address);
-    const addrWithoutCountry = removeCountryFromAddress(address);
-    console.log('Here is my fetchZPID address without the country',addrWithoutCountry);
-    const apiUrl = `https://api.bridgedataoutput.com/api/v2/pub/parcels?access_token=449866bf79a548efd5cfc5bc544a19e0&address.full=${encodeURIComponent(addrWithoutCountry)}`;
-    console.log(apiUrl);
-  
-  try {
+    console.log('Original address:', address);
+  const addrWithoutCountry = removeCountryFromAddress(address);
+  console.log('Without country:', addrWithoutCountry);
+
+  const searchZpid = async (queryAddress) => {
+    const apiUrl = `https://api.bridgedataoutput.com/api/v2/pub/parcels?access_token=449866bf79a548efd5cfc5bc544a19e0&address.full=${encodeURIComponent(queryAddress)}`;
+    console.log('Searching URL:', apiUrl);
+
     const response = await fetch(apiUrl);
-    
-    // Check if the response is ok (status code 200)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
-    // Log the response data for debugging
     console.log("API Response:", data);
-    
-    // Ensure the data contains parcels and retrieve the first zpid from the response
+
     if (data && data.bundle && data.bundle.length > 0) {
-      const zpid = data.bundle[0].zpid; // Assuming the first parcel has the desired zpid
+      const zpid = data.bundle[0].zpid;
+      return zpid;
+    }
+
+    return null;
+  };
+
+  try {
+    // First attempt
+    let zpid = await searchZpid(addrWithoutCountry);
+    if (zpid) return zpid;
+
+    // Second attempt - remove city
+    console.warn("No parcels found, retrying without city...");
+
+    // Try to remove the city from the address
+    const addressParts = addrWithoutCountry.split(',');
+    if (addressParts.length >= 3) {
+      // Example format: "1571 Housers Mill Rd, Fort Valley, GA"
+      const streetAndState = `${addressParts[0].trim()}, ${addressParts[2].trim()}`;
+      console.log('Retrying with address:', streetAndState);
+      zpid = await searchZpid(streetAndState);
       return zpid;
     } else {
-      console.error("No parcels found for the provided address");
+      console.warn("Address does not contain enough parts to retry without city.");
       return null;
     }
-    
   } catch (error) {
     console.error("Error fetching zpid:", error);
     return null;
