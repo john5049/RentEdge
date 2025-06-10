@@ -799,6 +799,8 @@ function createPropertyListItem({ propertyAddress, zpid }) {
     cleanedAddress = cleanedAddress.replace(regex, "");
   });
   
+  cleanedAddress = cleanedAddress.replace(/,\s*\d{5}(-\d{4})?$/, "");
+
   return cleanedAddress;
 }
 
