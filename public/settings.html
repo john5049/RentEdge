@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Settings - RentWise</title>
+  <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
+  <style>
+    /* Reuse your base styles from login page */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 30px;
+      font-size: 20px;
+    }
+
+    .navbar-left {
+      font-weight: bold;
+    }
+
+    .dashboard-container {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    label {
+      font-size: 18px;
+      font-style: italic;
+      display: block;
+      margin-top: 20px;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 6px;
+      box-sizing: border-box;
+    }
+
+    button.save-button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: block;
+      width: 100%;
+    }
+
+    button.save-button:hover {
+      background-color: #0d6efd;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <div class="navbar-left">🏠 RentWise</div>
+  </div>
+
+  <div class="dashboard-container">
+    <h1>Settings</h1>
+    <form id="settingsForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">New Password:</label>
+      <input type="password" id="password" name="password" placeholder="Leave blank to keep current" />
+
+      <label for="notifications">Notification Preference:</label>
+      <select id="notifications" name="notifications">
+        <option value="all">All Notifications</option>
+        <option value="email_only">Email Only</option>
+        <option value="none">No Notifications</option>
+      </select>
+
+      <button class="save-button" type="submit">Save Changes</button>
+    </form>
+  </div>
+
+  <script>
+    // Example: Load current user settings (mockup)
+    document.addEventListener('DOMContentLoaded', () => {
+      // In real app, fetch from backend
+      const userSettings = {
+        username: sessionStorage.getItem('userName') || '',
+        email: 'user@example.com',
+        notifications: 'all'
+      };
+
+      document.getElementById('username').value = userSettings.username;
+      document.getElementById('email').value = userSettings.email;
+      document.getElementById('notifications').value = userSettings.notifications;
+    });
+
+    // Handle form submit
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = e.target.username.value.trim();
+      const email = e.target.email.value.trim();
+      const password = e.target.password.value;
+      const notifications = e.target.notifications.value;
+
+      // Basic validation
+      if (!username || !email) {
+        alert('Username and email are required.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, notifications })
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          alert('Settings saved successfully!');
+          // Optionally update session storage or UI
+          sessionStorage.setItem('userName', username);
+          // Clear password field
+          e.target.password.value = '';
+        } else {
+          alert(`Failed to save settings: ${result.error}`);
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        alert('Something went wrong. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>
