@@ -435,7 +435,7 @@ async function validateAddress({ streetAddress, city, state }) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ streetAddress, city, state })
+      body: JSON.stringify({ streetAddress:'1571 housers mill road', city:'fort valley',state:'GA' })
     });
 
     const data = await res.json();
