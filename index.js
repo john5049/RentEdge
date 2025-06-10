@@ -279,6 +279,37 @@ async function getAccessToken() {
   return data.access_token;
 }
 
+app.post('/validate-address', async (req, res) => {
+  const { streetAddress, city, state } = req.body;
+
+  if (!streetAddress || !city || !state) {
+    return res.status(400).json({ error: 'Missing address fields' });
+  }
+
+  try {
+    const token = await getAccessToken(); // or reuse token if you cache it
+    const params = new URLSearchParams({ streetAddress, city, state });
+
+    const uspsRes = await fetch(`https://apis.usps.com/addresses/v3/address?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await uspsRes.json();
+
+    if (!uspsRes.ok) {
+      return res.status(uspsRes.status).json({ error: data });
+    }
+
+    return res.json(data);
+  } catch (err) {
+    console.error('❌ USPS proxy error:', err);
+    return res.status(500).json({ error: 'Failed to validate address' });
+  }
+});
+
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
     db.query(sql, (err, results) => {
