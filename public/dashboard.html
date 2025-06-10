@@ -441,9 +441,9 @@ async function validateAddress(token, {streetAddress, city, state}) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      streetAddress: '108 tanager lane',
-      city: 'kathleen',
-      state: 'GA'
+      streetAddress: streetAddress,
+      city: city,
+      state: state
     })
   })
   .then(res => res.json())
