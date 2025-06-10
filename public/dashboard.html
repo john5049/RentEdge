@@ -634,6 +634,9 @@ async function validateAddress({ streetAddress, city, state }) {
         const city = parts[1]?.trim();
         const state = parts[2]?.trim().split(' ')[0];
         //console.log('My formatted address for usps: ' + formatted);
+        console.log('street address is: ' + streetAddress);
+        console.log('city is: ' + city);
+        console.log('state is: ' + state);
 
         // Instead of prompting user to input the ZPID, let's see if the USPS API can provide the correct address.
         const uspsAdr = await validateAddress(streetAddress, city, state);
