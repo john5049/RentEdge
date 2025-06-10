@@ -1,11 +1,12 @@
 // index.js
 const express = require('express');
+const app = express();
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 
-const app = express();
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
@@ -50,6 +51,7 @@ console.error('❌ Failed to set up session store:', err);
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 app.use(session({
   secret: 'supersecret',
   resave: false,
