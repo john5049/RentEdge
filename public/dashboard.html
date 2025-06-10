@@ -428,39 +428,28 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
 }
 
 // Validate address
-async function validateAddress(token, {streetAddress, city, state}) {
-  //const params = new URLSearchParams({
-  //  streetAddress : streetAddress,
-  //  city: city,
-  //  state: state
-  //});
+async function validateAddress({ streetAddress, city, state }) {
+  try {
+    const res = await fetch('/validate-address', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ streetAddress, city, state })
+    });
 
-  const res = await fetch('/validate-address', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      streetAddress: streetAddress,
-      city: city,
-      state: state
-    })
-  })
-  .then(res => res.json())
-.then(data => {
-  console.log('✅ Validated address:', data);
-})
-.catch(err => {
-  console.error('❌ Error validating address:', err);
-});
+    const data = await res.json();
 
-  //const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Address validation failed: ${JSON.stringify(data)}`);
+    }
 
-  //if (!res.ok) {
-  //  throw new Error(`Address API failed: ${JSON.stringify(data)}`);
-  //}
-
-  return data;
+    console.log('✅ Validated address:', data);
+    return data;
+  } catch (err) {
+    console.error('❌ Error validating address:', err.message);
+    throw err; // optionally re-throw if calling code needs to handle
+  }
 }
 
   async function processCSV(text) {
