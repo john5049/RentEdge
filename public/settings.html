@@ -11,93 +11,76 @@
       padding: 0;
     }
 
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #4CAF50;
-      color: white;
-      padding: 15px 30px;
-      font-size: 20px;
-    }
+    .navbar-right {
+  position: relative;
+}
 
-    .navbar-left {
-      font-weight: bold;
-    }
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
 
-    .dashboard-container {
-      max-width: 600px;
-      margin: 60px auto;
-      padding: 40px;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+.dropbtn {
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 10px 16px;
+  border-radius: 6px;
+}
 
-    h1 {
-      font-size: 32px;
-      color: #333;
-      margin-bottom: 30px;
-      text-align: center;
-    }
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
 
-    label {
-      font-size: 18px;
-      font-style: italic;
-      display: block;
-      margin-top: 20px;
-      color: #444;
-    }
+.dropdown-content a,
+.dropdown-content button.logout-link {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+}
 
-    select {
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 6px;
-      box-sizing: border-box;
-    }
+.dropdown-content a:hover,
+.dropdown-content button.logout-link:hover {
+  background-color: #f1f1f1;
+}
 
-    button.save-button {
-      margin-top: 30px;
-      padding: 12px 24px;
-      font-size: 16px;
-      background-color: #1e90ff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      display: block;
-      width: 100%;
-    }
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 
-    button.save-button:hover {
-      background-color: #0d6efd;
-    }
   </style>
 </head>
 
 <body>
   <div class="navbar">
-    <div class="navbar-left">🏠 RentWise</div>
+  <div class="navbar-left">🏠 RentWise</div>
+  <div class="navbar-right">
+    <div class="dropdown">
+      <button class="dropbtn">Menu ▾</button>
+      <div class="dropdown-content">
+        <a href="/dashboard.html">Dashboard</a>
+        <form id="logout-form" action="/logout" method="GET" style="margin: 0;">
+          <button type="submit" class="logout-link">Logout</button>
+        </form>
+      </div>
+    </div>
   </div>
-
-  <div class="dashboard-container">
-    <h1>Reporting Preferences</h1>
-    <form id="reportForm">
-      <label for="frequency">Email Report Frequency:</label>
-      <select id="frequency" name="frequency">
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="never">Never</option>
-      </select>
-
-      <button class="save-button" type="submit">Save Reporting Preference</button>
-    </form>
-  </div>
+</div>
 
   <script>
     document.getElementById('reportForm').addEventListener('submit', async (e) => {
