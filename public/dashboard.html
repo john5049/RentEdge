@@ -435,7 +435,7 @@ async function validateAddress({ streetAddress, city, state }) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ streetAddress:'1571 housers mill road', city:'fort valley',state:'GA' })
+      body: JSON.stringify({ streetAddress:streetAddress, city:city,state:state })
     });
 
     const data = await res.json();
@@ -639,7 +639,7 @@ async function validateAddress({ streetAddress, city, state }) {
         console.log('state is: ' + state);
 
         // Instead of prompting user to input the ZPID, let's see if the USPS API can provide the correct address.
-        const uspsAdr = await validateAddress(streetAddress, city, state);
+        const uspsAdr = await validateAddress({streetAddress, city, state});
         console.log('Usps API response: ' + uspsAdr);
         //zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
 
