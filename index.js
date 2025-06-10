@@ -287,6 +287,8 @@ app.post('/validate-address', async (req, res) => {
   console.log('city is: ' + city);
   console.log('state is: ' + state);
 
+  console.log('Full req.body:', req.body);
+
   if (!streetAddress || !city || !state) {
     return res.status(400).json({ error: 'Missing address fields' });
   }
