@@ -281,6 +281,9 @@ async function getAccessToken() {
 
 app.post('/validate-address', async (req, res) => {
   const { streetAddress, city, state } = req.body;
+  console.log('street is: ' + streetAddress);
+  console.log('city is: ' + city);
+  console.log('state is: ' + state);
 
   if (!streetAddress || !city || !state) {
     return res.status(400).json({ error: 'Missing address fields' });
