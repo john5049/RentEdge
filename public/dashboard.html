@@ -629,8 +629,11 @@ async function validateAddress({ streetAddress, city, state }) {
         // If zpid fetching failed, prompt the user
         console.log('Now we try to validate ');
         console.log('Here is our propertyAddress: ' + propertyAddress);
+        const parts = propertyAddress.split(',');
+        const formatted = `${parts[0].trim()}, ${parts[1].trim()}, ${parts[2].trim().split(' ')[0]}`;
+        console.log('My formatted address for usps: ' + formatted);
         // Instead of prompting user to input the ZPID, let's see if the USPS API can provide the correct address.
-        const uspsAdr = await validateAddress(token, propertyAddress);
+        const uspsAdr = await validateAddress(token, formatted);
         console.log('Usps API response: ' + uspsAdr);
         //zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
 
