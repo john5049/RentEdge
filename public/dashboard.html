@@ -202,38 +202,35 @@ display: flex;
       background-color: #FF9AA2;
     }
 
-    .release-notes-container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', sans-serif;
+    .release-notes {
+  width: 100%;
+  background-color: #f0f0f0;
+  padding: 20px 30px;
+  box-sizing: border-box;
+  border-top: 1px solid #ccc;
 }
 
-.release-notes-container h2 {
+.release-notes h2 {
+  margin-top: 0;
   font-size: 24px;
   color: #333;
-  margin-bottom: 20px;
-  text-align: center;
 }
 
-.release-notes-list {
-  list-style-type: none;
-  padding-left: 0;
+.notes-container {
+  max-height: 150px; /* roughly 3 notes tall */
+  overflow-y: auto;
+  padding-right: 10px;
 }
 
-.release-notes-list li {
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
+.note {
+  padding: 10px;
+  background-color: #ffffff;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
   font-size: 16px;
-  color: #555;
 }
-
-.release-notes-list li:last-child {
-  border-bottom: none;
-}
+    
 </style>
 
 
@@ -902,15 +899,15 @@ async function deleteProperty(propertyId) {
 
   </script>
 
-<div class="release-notes-container">
-  <h2>📌 Release Notes</h2>
-  <ul class="release-notes-list">
-    <li><strong>v1.3 (June 2025):</strong> Adding reporting configuration to settings page with Quartz scheduler integration.</li>
-    <li><strong>v1.22:</strong> Integrated USPS addresses API to resolve issues with Geoapify.</li>
-    <li><strong>v1.2:</strong> Improved dashboard layout and added property valuation integration using Zillow API.</li>
-    <li><strong>v1.1:</strong> Introduced address autocomplete with Geoapify and refined user authentication flow.</li>
-    <li><strong>v1.0:</strong> Initial launch of RentWise with property management dashboard and user login.</li>
-  </ul>
+<div class="release-notes">
+  <h2>Release Notes</h2>
+  <div class="notes-container">
+    <div class="note">🔹 Added release notes</div>
+    <div class="note">🔧 Updated index.js</div>
+    <div class="note">📦 Fixed package.json</div>
+    <div class="note">🚀 Initial commit</div>
+    <div class="note">🛠️ Updated backend</div>
+  </div>
 </div>
 
 </body>
