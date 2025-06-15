@@ -201,6 +201,39 @@ display: flex;
     .logout-button:hover {
       background-color: #FF9AA2;
     }
+
+    .release-notes-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.release-notes-container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.release-notes-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.release-notes-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+  color: #555;
+}
+
+.release-notes-list li:last-child {
+  border-bottom: none;
+}
 </style>
 
 
@@ -868,5 +901,16 @@ async function deleteProperty(propertyId) {
   }
 
   </script>
+
+<div class="release-notes-container">
+  <h2>📌 Release Notes</h2>
+  <ul class="release-notes-list">
+    <li><strong>v1.3 (June 2025):</strong> Added reporting configuration to settings page with Quartz scheduler integration.</li>
+    <li><strong>v1.2:</strong> Improved dashboard layout and added property valuation integration using Zillow API.</li>
+    <li><strong>v1.1:</strong> Introduced address autocomplete with Geoapify and refined user authentication flow.</li>
+    <li><strong>v1.0:</strong> Initial launch of RentWise with property management dashboard and user login.</li>
+  </ul>
+</div>
+
 </body>
 </html>
