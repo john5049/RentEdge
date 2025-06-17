@@ -233,6 +233,72 @@ display: flex;
   color: #f0f0f0;
   line-height: 1.5;
 }
+
+/* Donate Button */
+.donate-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.submit-donation {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
     
 </style>
 
@@ -287,6 +353,19 @@ display: flex;
     <h1>Market Valuation</h1>
     <ul id="analytics-list" style="list-style: none; padding: 0;"></ul>
    </div>
+</div>
+
+<button class="donate-button" onclick="openDonationModal()">💖 Donate</button>
+
+<!-- Donation Modal -->
+<div id="donationModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeDonationModal()">&times;</span>
+    <h3>Support RentWise</h3>
+    <p>Your support helps us grow and improve.</p>
+    <input type="number" id="donationAmount" placeholder="Enter amount ($)" min="1" />
+    <button class="submit-donation" onclick="submitDonation()">Donate</button>
+  </div>
 </div>
    
   <script>
@@ -459,6 +538,27 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
   console.log('My access key is: ' + data);
   return data.access_token;
 }
+
+function openDonationModal() {
+    document.getElementById('donationModal').style.display = 'block';
+  }
+
+  function closeDonationModal() {
+    document.getElementById('donationModal').style.display = 'none';
+  }
+
+  function submitDonation() {
+    const amount = document.getElementById('donationAmount').value;
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid donation amount.");
+      return;
+    }
+
+    alert(`Thank you for your donation of $${amount}!`);
+    closeDonationModal();
+
+    // TODO: Integrate with real payment API like Stripe, PayPal, etc.
+  }
 
 // Validate address
 async function validateAddress({ streetAddress, city, state }) {
@@ -912,6 +1012,8 @@ async function deleteProperty(propertyId) {
     <li>Initial launch of RentWise with property management dashboard and user login.</li>
   </ul>
 </div>
+
+<button class="donate-button" onclick="openDonationModal()">💖 Donate</button>
 
 </body>
 </html>
