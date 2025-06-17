@@ -204,34 +204,34 @@ display: flex;
 
     .release-notes {
   width: 100%;
-  background-color: #45a049;
+  background-color: #4CAF50; /* match navbar */
   padding: 20px 30px;
   box-sizing: border-box;
-  border-top: 1px solid #45a049;
   color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .release-notes h2 {
   margin-top: 0;
-  font-size: 24px;
-  color: white;
-;
+  font-size: 22px;
+  font-weight: normal;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
 }
 
-.notes-container {
-  max-height: 150px; /* roughly 3 notes tall */
+.notes-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  max-height: 150px; /* limit to ~3 notes */
   overflow-y: auto;
-  padding-right: 10px;
+  margin: 10px 0 0 0;
 }
 
-.note {
-  padding: 10px;
-  background-color: #ffffff;
+.notes-list li {
   margin-bottom: 8px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
   font-size: 16px;
-  color: #333;
+  color: #f0f0f0;
+  line-height: 1.5;
 }
     
 </style>
@@ -904,13 +904,13 @@ async function deleteProperty(propertyId) {
 
 <div class="release-notes">
   <h2>Release Notes</h2>
-  <div class="notes-container">
-    <div class="note">Adding reporting configuration to settings page with Quartz scheduler integration.</div>
-    <div class="note">Integrated USPS API to improve property search function.</div>
-    <div class="note">Improved dashboard layout and added property valuation integration using Zillow API.</div>
-    <div class="note">Introduced address autocomplete with Geoapify and refined user authentication flow.</div>
-    <div class="note">Initial launch of RentWise with property management dashboard and user login.</div>
-  </div>
+  <ul class="notes-list">
+    <li>Adding reporting configuration to settings page with Quartz scheduler integration.</li>
+    <li>Integrated USPS API to improve property search function.</li>
+    <li>Improved dashboard layout and added property valuation integration using Zillow API.</li>
+    <li>Introduced address autocomplete with Geoapify and refined user authentication flow.</li>
+    <li>Initial launch of RentWise with property management dashboard and user login.</li>
+  </ul>
 </div>
 
 </body>
