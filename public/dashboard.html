@@ -90,6 +90,34 @@
   font-size: 16px;
 }
 
+.dropdown-content .donate-nav-button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: black;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover,
+.dropdown-content .donate-nav-button:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.donate-nav-button {
+  background: none;
+  font-size: 16px;
+}
+
 .dashboard-container {
   max-width: 100%;
   margin: 0px auto;
@@ -102,28 +130,32 @@
 }
 
 .dashboard-layout {
-display: flex;
-  flex-wrap: wrap; /* ✅ allow children to stack */
+  display: flex;
   gap: 20px;        /* better spacing */
   padding: 20px;
+  align-items: stretch;
 }
 
 .properties-container {
-  flex: 1;
+  flex: 1 1 100%;
   max-height: 600px; /* Example height */
+  max-width: 50%;
   overflow-y: auto;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 40px;
   border-radius: 10px;
+  min-height: 500px;
 }
 .analytics-container {
   flex: 1 1 100%; /* ✅ grow and shrink; take full width on small screens */
   max-height: 600px;
-  overflow-y: auto;
+  max-width: 50%;
   border: 1px solid #ccc;
-  padding: 10px;
+  padding: 40px;
+  overflow-y: auto;
   border-radius: 10px;
   box-sizing: border-box;
+  min-height: 500px;
 }
 
     /* Custom Scrollbar Styling */
@@ -151,7 +183,7 @@ display: flex;
       cursor: pointer;
     }
 
-    .properties-container {
+    /* .properties-container {
       max-width: 900px;
       margin: 60px auto;
       padding: 40px;
@@ -160,7 +192,6 @@ display: flex;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       text-align:center;
       max-height: 500px;
-      overflow-y:scroll;
     }
 
     .analytics-container {
@@ -173,7 +204,7 @@ display: flex;
       text-align: center;
       max-height: 500px;
       overflow-y:scroll;
-    }
+    } */
 
     h1 {
       font-size: 32px;
@@ -201,6 +232,140 @@ display: flex;
     .logout-button:hover {
       background-color: #FF9AA2;
     }
+
+    .release-notes {
+  width: 100%;
+  background-color: #4CAF50; /* match navbar */
+  padding: 20px 30px;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.release-notes h2 {
+  margin-top: 0;
+  font-size: 22px;
+  font-weight: normal;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
+}
+
+.notes-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  max-height: 150px; /* limit to ~3 notes */
+  overflow-y: auto;
+  margin: 10px 0 0 0;
+}
+
+.notes-list li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #f0f0f0;
+  line-height: 1.5;
+}
+
+/* Donate Button */
+.donate-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.submit-donation {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
+    
+.donation-box {
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-top: 30px;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.venmo-handle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.cashapp-handle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.venmo-qr {
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}    
+.cashapp-qr {
+  margin-top: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}    
 </style>
 
 
@@ -218,6 +383,7 @@ display: flex;
             <form id="logout-form" action="/logout" method="GET" style="margin: 0;">
               <button type="submit" class="logout-link">Logout</button>
             </form>
+            <button class="donate-nav-button" onclick="openDonationModal()">Donate</button>
           </div>
         </div>
       </div>
@@ -240,20 +406,36 @@ display: flex;
     <!-- Add property form -->
     <input type="text" id="autocomplete-input" placeholder="Enter property address..." style="padding: 10px; width: 60%; border-radius: 8px; border: 1px solid #ccc;">
     <button onclick="addProperty()" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">➕ Add Property</button>
-    <input type="file" id="file-upload" style="display: none;" accept=".csv, .xlsx, .xls" />
-    <button onclick="document.getElementById('file-upload').click()" class="upload-file-button" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #e3c681; color: white; border: none; cursor: pointer;">📁 Upload File</button>
+    <!-- <input type="file" id="file-upload" style="display: none;" accept=".csv, .xlsx, .xls" />
+    <button onclick="document.getElementById('file-upload').click()" class="upload-file-button" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #e3c681; color: white; border: none; cursor: pointer;">📁 Upload File</button> -->
 
     <ul id="suggestions" style="list-style: none; padding: 0; margin-top: 10px;"></ul>
 
     <h3 style="margin-top: 30px;">My Properties</h3>
     <!-- Where properties will be listed -->
-    <ul id="property-list" style="list-style: none; padding: 0; margin-top: 20px;"></ul>
+    <ul id="property-list" style="list-style: none; padding: 0; margin-top: 20px; max-height: 400px; overflow-y: auto;"></ul>
    </div>
 
    <div class="analytics-container">
     <h1>Market Valuation</h1>
-    <ul id="analytics-list" style="list-style: none; padding: 0;"></ul>
+    <ul id="analytics-list" style="list-style: none; padding: 0; max-height: 400px; overflow-y: auto;"></ul>
    </div>
+</div>
+
+<button class="donate-button" onclick="openDonationModal()">💖 Donate</button>
+
+<!-- Donation Modal -->
+<div id="donationModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeDonationModal()">&times;</span>
+    <h3>Support RentWise</h3>
+    <p>Help keep our servers online by donating!</p>
+    <div class="venmo-handle">Venmo: @John-Akridge-1</div>
+    <img src="/images/venmo.PNG" alt="Venmo QR Code" width="150" class="venmo-qr" />
+
+    <div class="cashapp-handle">CashApp: $RobertAkridge</div>
+    <img src="/images/cashapp.PNG" alt="CashApp QR Code" width="150" class="cashapp-qr" />
+  </div>
 </div>
    
   <script>
@@ -426,6 +608,27 @@ document.getElementById('file-upload').addEventListener('change', function(e) {
   console.log('My access key is: ' + data);
   return data.access_token;
 }
+
+function openDonationModal() {
+    document.getElementById('donationModal').style.display = 'block';
+  }
+
+  function closeDonationModal() {
+    document.getElementById('donationModal').style.display = 'none';
+  }
+
+  function submitDonation() {
+    const amount = document.getElementById('donationAmount').value;
+    if (!amount || amount <= 0) {
+      alert("Please enter a valid donation amount.");
+      return;
+    }
+
+    alert(`Thank you for your donation of $${amount}!`);
+    closeDonationModal();
+
+    // TODO: Integrate with real payment API like Stripe, PayPal, etc.
+  }
 
 // Validate address
 async function validateAddress({ streetAddress, city, state }) {
@@ -868,5 +1071,19 @@ async function deleteProperty(propertyId) {
   }
 
   </script>
+
+<div class="release-notes">
+  <h2>Release Notes</h2>
+  <ul class="notes-list">
+    <li>Adding reporting configuration to settings page with Quartz scheduler integration.</li>
+    <li>Integrated USPS API to improve property search function.</li>
+    <li>Improved dashboard layout and added property valuation integration using Zillow API.</li>
+    <li>Introduced address autocomplete with Geoapify and refined user authentication flow.</li>
+    <li>Initial launch of RentWise with property management dashboard and user login.</li>
+  </ul>
+</div>
+
+<button class="donate-button" onclick="openDonationModal()">💖 Donate</button>
+
 </body>
 </html>
