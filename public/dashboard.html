@@ -137,31 +137,25 @@
 }
 
 .properties-container {
-  flex: 1;
-  height: 100%; /* Let them fill the container */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 1 1 100%;
+  max-height: 600px; /* Example height */
+  max-width: 50%;
+  overflow-y: auto;
   border: 1px solid #ccc;
-  box-sizing: border-box;
+  padding: 40px;
+  border-radius: 10px;
+  min-height: 500px;
 }
-
 .analytics-container {
-  flex: 1;
-  height: 100%; /* Let them fill the container */
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 1 1 100%; /* ✅ grow and shrink; take full width on small screens */
+  max-height: 600px;
+  max-width: 50%;
   border: 1px solid #ccc;
+  padding: 40px;
+  overflow-y: auto;
+  border-radius: 10px;
   box-sizing: border-box;
+  min-height: 500px;
 }
 
     /* Custom Scrollbar Styling */
