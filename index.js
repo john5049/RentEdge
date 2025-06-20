@@ -97,6 +97,26 @@ app.post('/login', (req, res) => {
   });
 });
 
+// POST /api/feature-request
+app.post('/api/feature-request', async (req, res) => {
+  const { message } = req.body;
+
+  const mailOptions = {
+    from: 'john@akridgeenterprises.com',
+    to: 'john@akridgeenterprises.com',
+    subject: 'New Feature Request from RentWise',
+    text: message,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error sending feature request email:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
 // USPS Token Route
 app.post('/token', async (req,res) => {
       console.log('Attempt to access token');
