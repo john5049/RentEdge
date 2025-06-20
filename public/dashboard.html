@@ -139,6 +139,7 @@ display: flex;
 .properties-container {
   flex: 1;
   max-height: 600px; /* Example height */
+  max-width: 40%;
   overflow-y: auto;
   border: 1px solid #ccc;
   padding: 10px;
@@ -148,6 +149,7 @@ display: flex;
 .analytics-container {
   flex: 1 1 100%; /* ✅ grow and shrink; take full width on small screens */
   max-height: 600px;
+  max-width: 40%;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 10px;
@@ -179,6 +181,29 @@ display: flex;
       background-color: #45a049;
       cursor: pointer;
     }
+
+    /* .properties-container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align:center;
+      max-height: 500px;
+    }
+
+    .analytics-container {
+      max-width: 40%;
+      margin: 60px;
+      padding: 40px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-height: 500px;
+      overflow-y:scroll;
+    } */
 
     h1 {
       font-size: 32px;
