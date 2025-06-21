@@ -903,11 +903,13 @@ async function validateAddress({ streetAddress, city, state }) {
     const query = input.value;
     if (query.length < 3) {
       suggestionsList.innerHTML = "";
+      suggestionsList.style.display = "none";
       return;
     }
 
     const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&limit=10&apiKey=${apiKey}`);
     const data = await response.json();
+    console.log('API response data: ' + data);
 
     suggestionsList.innerHTML = "";
     data.features.forEach(feature => {
