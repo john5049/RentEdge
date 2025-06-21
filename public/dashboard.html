@@ -1173,7 +1173,7 @@ async function submitFeatureRequest() {
   //const text = document.getElementById('featureRequestText').value.trim();
   const message = document.getElementById('featureRequestText').value.trim();
   const user = sessionStorage.getItem("userName") || "Anonymous";
-  if (!text) {
+  if (!message) {
     alert('Please enter a feature request.');
     return;
   }
