@@ -902,7 +902,7 @@ async function validateAddress({ streetAddress, city, state }) {
     const query = input.value;
     if (query.length < 3) {
       suggestionsList.innerHTML = "";
-      suggestionsList.style.display = "none";
+      console.log("Suggestion input: " + query.text);
       return;
     }
 
