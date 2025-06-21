@@ -15,6 +15,16 @@ const PORT = process.env.PORT;
 const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'john@akridgeenterprises.com',
+    pass: 'kdigndhcupbaazpb'
+  }
+});
+
 var token = null;
 
 // DB connection
