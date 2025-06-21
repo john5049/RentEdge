@@ -598,7 +598,7 @@
       window.location.href = '/login.html';
     } else {
       document.getElementById('welcome-message').innerHTML =
-  `<span style="font-size: 24px;">Hello, ${username} welcome back to <strong style="color: green;">RentEdge</strong>. We're glad you're here!</span>`;
+      `<span style="font-size: 24px;">Hello, ${username} welcome back to <strong style="color: green;">RentEdge</strong>. We're glad you're here!</span>`;
         loadProperties();
     }
 
@@ -802,7 +802,7 @@ async function validateAddress({ streetAddress, city, state }) {
   }
 }
 
-  async function processCSV(text) {
+async function processCSV(text) {
     const lines = text.trim().split('\n');
     const header = lines[0].split(',');
 
@@ -901,6 +901,7 @@ async function validateAddress({ streetAddress, city, state }) {
 
     input.addEventListener("input", async () => {
     const query = input.value;
+    console.log("Query is: " + query.text);
     if (query.length < 3) {
       suggestionsList.innerHTML = "";
       console.log("Suggestion input: " + query.text);
