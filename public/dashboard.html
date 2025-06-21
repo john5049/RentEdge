@@ -90,7 +90,21 @@
   font-size: 16px;
 }
 
-.dropdown-content .donate-nav-button .feature-nav-button {
+.dropdown-content .donate-nav-button {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  text-align: left;
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: black;
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.dropdown-content .feature-nav-button {
   display: block;
   width: 100%;
   padding: 12px 16px;
@@ -105,7 +119,11 @@
 }
 
 .dropdown-content a:hover,
-.dropdown-content .donate-nav-button:hover .feature-nav-button:hover {
+.dropdown-content .donate-nav-button:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown-content .feature-nav-button:hover {
   background-color: #f1f1f1;
 }
 
@@ -113,7 +131,12 @@
   display: block;
 }
 
-.donate-nav-button .feature-nav-button {
+.donate-nav-button {
+  background: none;
+  font-size: 16px;
+}
+
+.feature-nav-button {
   background: none;
   font-size: 16px;
 }
@@ -366,6 +389,7 @@
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
 
 /* Modal Styles */
 .modal {
