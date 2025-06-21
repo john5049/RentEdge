@@ -426,21 +426,25 @@
 }
 
 .submit-feature-button {
-  display: block;
-  width: 100%;
-  padding: 12px 16px;
-  text-align: left;
-  text-decoration: none;
-  background: none;
+  padding: 12px 24px;
+  background-color: #4CAF50; /* same green as your navbar */
+  color: white;
   border: none;
-  color: black;
+  border-radius: 8px;
   font-size: 16px;
-  font-family: inherit;
+  font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 20px;
 }
 
 .submit-feature-button:hover {
-  background-color: #0d6efd;
+  background-color: #45a049;
+  transform: scale(1.03);
+}
+
+.submit-feature-button:active {
+  transform: scale(0.98);
 }
 
 .close {
