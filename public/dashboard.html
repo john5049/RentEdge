@@ -156,23 +156,22 @@
   display: flex;
   gap: 20px;        /* better spacing */
   padding: 20px;
-  align-items: stretch;
 }
 
 .properties-container {
   flex: 1;
   max-height: 600px;
-  max-width: 50%;
+  /* max-width: 50%; */
   overflow-y: auto;
   border: 1px solid #ccc;
   padding: 40px;
   border-radius: 10px;
-  position: relative;
+  /* position: relative; */
 }
 .analytics-container {
   flex: 1 1 100%; 
   max-height: 600px;
-  max-width: 50%;
+  /* max-width: 50%; */
   border: 1px solid #ccc;
   padding: 40px;
   overflow-y: auto;
@@ -454,21 +453,6 @@
   cursor: pointer;
 }
 
-#suggestions {
-  position: absolute;
-  background-color: white;
-  border: 1px solid #ccc;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 9999;
-  display: none;
-}
-
-#suggestions li:hover {
-  background-color: #f0f0f0;
-}
-
 .autocomplete-wrapper {
   position: relative;
   width: 60%;
@@ -480,32 +464,6 @@
   width: 100%;
   border-radius: 8px;
   border: 1px solid #ccc;
-}
-
-#suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid #ccc;
-  border-top: none;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 9999;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#suggestions li {
-  padding: 8px;
-  cursor: pointer;
-  border-bottom: 1px solid #eee;
-}
-
-#suggestions li:hover {
-  background-color: #f0f0f0;
 }
 
 </style>
@@ -547,13 +505,10 @@
   <div class="properties-container">
     <h1>Properties</h1>
     <!-- Add property form -->
-     <div class="autocomplete-wrapper">
-        <input type="text" id="autocomplete-input" placeholder="Enter property address..." style="padding: 10px; width: 60%; border-radius: 8px; border: 1px solid #ccc;">
-        <button onclick="addProperty()" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">➕ Add Property</button>
-     </div>
-    
-    <!-- <input type="file" id="file-upload" style="display: none;" accept=".csv, .xlsx, .xls" />
-    <button onclick="document.getElementById('file-upload').click()" class="upload-file-button" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #e3c681; color: white; border: none; cursor: pointer;">📁 Upload File</button> -->
+    <input type="text" id="autocomplete-input" placeholder="Enter property address..." style="padding: 10px; width: 60%; border-radius: 8px; border: 1px solid #ccc;">
+    <button onclick="addProperty()" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">➕ Add Property</button>
+    <input type="file" id="file-upload" style="display: none;" accept=".csv, .xlsx, .xls" />
+    <button onclick="document.getElementById('file-upload').click()" class="upload-file-button" style="padding: 10px 20px; margin-left: 10px; border-radius: 8px; background-color: #e3c681; color: white; border: none; cursor: pointer;">📁 Upload File</button>
 
     <ul id="suggestions" style="list-style: none; padding: 0; margin-top: 10px;"></ul>
 
