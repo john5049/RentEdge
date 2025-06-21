@@ -1170,7 +1170,9 @@ function closeFeatureModal() {
 }
 
 async function submitFeatureRequest() {
-  const text = document.getElementById('featureRequestText').value.trim();
+  //const text = document.getElementById('featureRequestText').value.trim();
+  const message = document.getElementById('featureRequestText').value.trim();
+  const user = sessionStorage.getItem("userName") || "Anonymous";
   if (!text) {
     alert('Please enter a feature request.');
     return;
@@ -1180,7 +1182,7 @@ async function submitFeatureRequest() {
     const response = await fetch('/api/feature-request', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ user, message})
     });
 
     if (response.ok) {

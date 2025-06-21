@@ -109,12 +109,12 @@ app.post('/login', (req, res) => {
 
 // POST /api/feature-request
 app.post('/api/feature-request', async (req, res) => {
-  const { message } = req.body;
+  const { user, message } = req.body;
 
   const mailOptions = {
     from: 'john@akridgeenterprises.com',
     to: 'john@akridgeenterprises.com',
-    subject: 'New Feature Request from RentWise',
+    subject: `New Feature Request from ${user}`,
     text: message,
   };
 
