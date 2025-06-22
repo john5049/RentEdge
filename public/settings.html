@@ -187,11 +187,31 @@ width: 100%;
         <!-- You had some content but not included in this snippet -->
          <h1>Reporting Configuration</h1>
          <label for="report-frequency">Email Reports:</label>
-        <select id="report-frequency" name="frequency">
-          <option value="none">Don't send</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
+        <form id="report-schedule-form">
+          <label for="frequency">Frequency:</label>
+          <select id="frequency" name="frequency" required>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+
+          <label for="day">Day of Week (if weekly):</label>
+          <select id="day" name="day">
+            <option value="">--</option>
+            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+          </select>
+
+          <label for="time">Time of Day:</label>
+          <input type="time" id="time" name="time" required />
+
+          <button type="submit">Save Report Settings</button>
+        </form>
       </div>
     </div>
 
