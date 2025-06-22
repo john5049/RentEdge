@@ -158,59 +158,67 @@ color: white;
 text-align: center;
 padding: 15px 0;
 font-size: 14px;
-position: fixed;
-bottom: 0;
-left: 0;
+position: static;
 width: 100%;
 }
   </style>
 </head>
 
 <body>
-  <div class="navbar">
-  <div class="navbar-left">🏠 RentEdge</div>
-  <div class="navbar-right">
-    <div class="dropdown">
-      <button class="dropbtn">Menu ▾</button>
-      <div class="dropdown-content">
-        <a href="/dashboard.html">Dashboard</a>
-        <form id="logout-form" action="/logout" method="GET" style="margin: 0;">
-          <button type="submit" class="logout-link">Logout</button>
-        </form>
+  <div class="page-wrapper">
+    <div class="navbar">
+      <div class="navbar-left">🏠 RentEdge</div>
+      <div class="navbar-right">
+        <div class="dropdown">
+          <button class="dropbtn">Menu ▾</button>
+          <div class="dropdown-content">
+            <a href="/dashboard.html">Dashboard</a>
+            <form id="logout-form" action="/logout" method="GET" style="margin: 0;">
+              <button type="submit" class="logout-link">Logout</button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
+
+    <div class="content">
+      <div class="dashboard-container">
+        <!-- Your settings content goes here (like h1, select, etc.) -->
+        <!-- You had some content but not included in this snippet -->
+      </div>
+    </div>
+
+    <footer class="footer">
+      © 2025 RentEdge. All rights reserved.
+    </footer>
   </div>
-</div>
-<footer style="background-color: #4CAF50; color: white; text-align: center; padding: 15px 0; font-size: 14px;">
-  © 2025 RentEdge. All rights reserved.
-</footer>
-
-  <script>
-    document.getElementById('reportForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const frequency = e.target.frequency.value;
-
-      try {
-        const res = await fetch('/api/reporting', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ frequency })
-        });
-
-        const result = await res.json();
-
-        if (res.ok) {
-          alert('Reporting preference saved!');
-        } else {
-          alert(`Error: ${result.error}`);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Unexpected error. Please try again later.');
-      }
-    });
-  </script>
-  
 </body>
+
+
+<script>
+  document.getElementById('reportForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const frequency = e.target.frequency.value;
+
+    try {
+      const res = await fetch('/api/reporting', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ frequency })
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert('Reporting preference saved!');
+      } else {
+        alert(`Error: ${result.error}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Unexpected error. Please try again later.');
+    }
+  });
+</script>
 </html>
