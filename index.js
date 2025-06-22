@@ -380,6 +380,8 @@ async function sendReportEmail(to, properties) {
   });
 }
 
+
+
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
     db.query(sql, (err, results) => {
