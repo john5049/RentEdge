@@ -290,29 +290,44 @@ label {
 
 
 <script>
-  document.getElementById("report-schedule-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const frequency = e.target.frequency.value;
-  const day = e.target.day.value || null;
-  const time = e.target.time.value + ":00"; // convert HH:MM → HH:MM:SS
+  let selectedFrequency = "daily";
 
-  try {
-    const res = await fetch('/api/reporting/schedule', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ frequency, day_of_week: day, time_of_day: time })
+  document.querySelectorAll(".freq-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".freq-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      selectedFrequency = btn.dataset.value;
+
+      // Show/hide day selector
+      document.getElementById("day-selector").style.display = selectedFrequency === "weekly" ? "block" : "none";
     });
+  });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Reporting preferences saved!");
-    } else {
-      alert("Error: " + data.error);
+  document.getElementById("save-report-btn").addEventListener("click", async () => {
+    const day = document.getElementById("day").value || null;
+    const time = document.getElementById("time").value + ":00";
+
+    try {
+      const res = await fetch('/api/reporting/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          frequency: selectedFrequency,
+          day_of_week: day,
+          time_of_day: time
+        })
+      });
+
+      const result = await res.json();
+      if (res.ok) {
+        alert("✅ Schedule saved!");
+      } else {
+        alert("Error: " + result.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error saving schedule.");
     }
-  } catch (err) {
-    console.error(err);
-    alert("Something went wrong.");
-  }
-});
+  });
 </script>
 </html>
