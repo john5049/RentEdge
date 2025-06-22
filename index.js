@@ -16,6 +16,8 @@ const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
+
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -346,6 +348,37 @@ app.post('/validate-address', async (req, res) => {
     return res.status(500).json({ error: 'Failed to validate address' });
   }
 });
+
+async function sendReportEmail(to, properties) {
+  const rows = properties.map(p => `
+    <tr>
+      <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
+      <td style="padding:10px;border:1px solid #ddd;">$${p.zestimate.toLocaleString()}</td>
+      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate.toLocaleString()}/mo</td>
+    </tr>
+  `).join('');
+
+  const html = `
+    <h2>Your RentEdge Property Report</h2>
+    <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
+      <thead>
+        <tr style="background-color: #4CAF50; color: white;">
+          <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Zestimate</th>
+          <th style="padding: 10px; border: 1px solid #ddd;">Rent Zestimate</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+
+  await transporter.sendMail({
+    from: '"RentEdge Reports" <your-email@example.com>',
+    to,
+    subject: "Your Weekly Property Report",
+    html,
+  });
+}
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
