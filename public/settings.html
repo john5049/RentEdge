@@ -223,29 +223,29 @@ width: 100%;
 
 
 <script>
-  document.getElementById('reportForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  document.getElementById("report-schedule-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const frequency = e.target.frequency.value;
+  const day = e.target.day.value || null;
+  const time = e.target.time.value + ":00"; // convert HH:MM → HH:MM:SS
 
-    const frequency = e.target.frequency.value;
+  try {
+    const res = await fetch('/api/reporting/schedule', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ frequency, day_of_week: day, time_of_day: time })
+    });
 
-    try {
-      const res = await fetch('/api/reporting', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ frequency })
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        alert('Reporting preference saved!');
-      } else {
-        alert(`Error: ${result.error}`);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Unexpected error. Please try again later.');
+    const data = await res.json();
+    if (res.ok) {
+      alert("Reporting preferences saved!");
+    } else {
+      alert("Error: " + data.error);
     }
-  });
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong.");
+  }
+});
 </script>
 </html>
