@@ -4,14 +4,25 @@
   <title>Login</title>
   <link rel="icon" href="/icons8-house-32.png" type="image/x-icon"/>
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f5f7fa;
-      margin: 0;
-      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
-    /* Navbar styling */
+    .page-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -24,52 +35,6 @@
 
     .navbar-left {
       font-weight: bold;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropbtn {
-      background-color: #1e90ff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: white;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-      right: 0;
-    }
-
-    .dropdown-content a,
-    .dropdown-content button.logout-link {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      background: none;
-      border: none;
-      text-align: left;
-      width: 100%;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .dropdown-content a:hover,
-    .dropdown-content button.logout-link:hover {
-      background-color: #f1f1f1;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
     }
 
     .dashboard-container {
@@ -136,28 +101,41 @@
     .register-link a:hover {
       text-decoration: underline;
     }
+
+    .footer {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 14px;
+    }
   </style>
 </head>
 
 <body>
-  <div class="navbar">
-    <div class="navbar-left">🏠 RentWise</div>
-    
-  </div>
+  <div class="page-wrapper">
+    <div class="navbar">
+      <div class="navbar-left">🏠 RentWise</div>
+    </div>
 
-  <div class="dashboard-container">
-    <h1>Login</h1>
-    <form id="loginForm">
-      <label>Username:</label>
-      <input type="text" name="username" required />
-      <label>Password:</label>
-      <input type="password" name="password" required />
-      <button class="login-button" type="submit">Login</button>
-    </form>
-    <div class="register-link">
-      Not a member? <a href="/register.html">Register here</a>
+    <div class="dashboard-container">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <label>Username:</label>
+        <input type="text" name="username" required />
+        <label>Password:</label>
+        <input type="password" name="password" required />
+        <button class="login-button" type="submit">Login</button>
+      </form>
+      <div class="register-link">
+        Not a member? <a href="/register.html">Register here</a>
+      </div>
     </div>
   </div>
+
+  <footer class="footer">
+    © 2025 RentEdge. All rights reserved.
+  </footer>
 
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -190,6 +168,3 @@
   </script>
 </body>
 </html>
-<footer style="background-color: #4CAF50; color: white; text-align: center; padding: 15px 0; font-size: 14px;">
-  © 2025 RentEdge. All rights reserved.
-</footer>
