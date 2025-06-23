@@ -53,6 +53,35 @@ async function getScheduledUsers() {
   return rows;
 }
 
+async function fetchZillowData(zpid) {
+  try {
+    const zillowAPIurl = `https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates?access_token=449866bf79a548efd5cfc5bc544a19e0&zpid=${zpid}`;
+    console.log(zillowAPIurl);
+    const response = await fetch(zillowAPIurl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Zillow data: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    if (data && data.bundle && data.bundle.length > 0) {
+      const firstResult = data.bundle[0];
+      const zestimate = firstResult.zestimate;
+      const rentalZestimate = firstResult.rentalZestimate;
+
+      console.log("Zestimate:", zestimate);
+      console.log("Rental Zestimate:", rentalZestimate);
+
+      return { zestimate, rentalZestimate };
+    } else {
+      console.error("No Zestimate data found for this ZPID.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching Zestimate:", error);
+    return null;
+  }
+}
+
 console.log('✅ MySQL connection pool created');
 
 // Session store
@@ -522,37 +551,20 @@ cron.schedule('* * * * *', async () => {
       // 3. Query Zillow API for each property
       const reportData = [];
       for (const p of properties) {
+      const address = p.propertyAddress;
       const zpid = p.zpid;
 
-      try {
-        const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${ZILLOW_API_KEY}`
-          },
-          body: JSON.stringify({ zpid })  // ✅ Use zpid here
-        });
-
-        const data = await zillowRes.json();
-        console.log(`📦 Zillow API response for ZPID ${zpid}:`, data);
-
-        const zestimate = data.zestimate?.amount ? `$${data.zestimate.amount.toLocaleString()}` : 'Not Available';
-        const rentZestimate = data.rentZestimate?.amount ? `$${data.rentZestimate.amount.toLocaleString()}` : 'Not Available';
-
+      const zillowData = await fetchZillowData(zpid);
+      
+      if (zillowData) {
+        const { zestimate, rentalZestimate } = zillowData;
         reportData.push({
-          address: p.propertyAddress,
-          zestimate,
-          rentZestimate
+          address,
+          zestimate: zestimate ? `$${zestimate.toLocaleString()}` : 'N/A',
+          rentZestimate: rentalZestimate ? `$${rentalZestimate.toLocaleString()}/mo` : 'N/A'
         });
-
-      } catch (err) {
-        console.error(`❌ Zillow API error for ZPID ${zpid}:`, err);
-        reportData.push({
-          address: p.propertyAddress,
-          zestimate: 'Error',
-          rentZestimate: 'Error'
-        });
+      } else {
+        reportData.push({ address, zestimate: 'N/A', rentZestimate: 'N/A' });
       }
     }
 
