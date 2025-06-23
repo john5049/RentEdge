@@ -458,14 +458,13 @@ cron.schedule('* * * * *', async () => {
       
 
       const timeMatch = user.time_of_day.slice(0, 5) === currentTime;
-      console.log('Time match is:', timeMatch);
-      console.log('Match?', timeMatch, dayMatch);
-
       const dayMatch = (
         user.frequency === 'daily' ||
         (user.frequency === 'weekly' && now.format('dddd') === user.day_of_week) ||
         (user.frequency === 'monthly' && now.date() === user.day_of_month)
       );
+      console.log('Time match is:', timeMatch);
+      console.log('Match?', timeMatch, dayMatch);
 
       if (timeMatch && dayMatch) {
         const [properties] = await db.promise().query(
