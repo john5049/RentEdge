@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
 var token = null;
 
 // DB connection
-/* const db = mysql.createPool({
+const db = mysql.createPool({
   host: 'shuttle.proxy.rlwy.net',
   user: 'root',
   password: 'LjOHgARUvXlDzVwTPDdSGgoDKGFhLPFl',
@@ -39,8 +39,7 @@ var token = null;
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-}); */
-const db = require('./db');
+});
 
 console.log('✅ MySQL connection pool created');
 
