@@ -380,7 +380,32 @@ async function sendReportEmail(to, properties) {
   });
 }
 
+app.post('/api/reporting/schedule', async (req, res) => {
+  const { frequency, day_of_week, day_of_month, time_of_day } = req.body;
+  const userId = req.session?.userId || req.user?.id;
 
+  if (!userId || !frequency || !time_of_day) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    // Optional: delete any existing schedule for the user to avoid duplicates
+    await db.query('DELETE FROM report_schedules WHERE user_id = ?', [userId]);
+
+    // Insert new schedule
+    await db.query(
+      `INSERT INTO report_schedules 
+        (user_id, frequency, day_of_week, day_of_month, time_of_day) 
+        VALUES (?, ?, ?, ?, ?)`,
+      [userId, frequency, day_of_week, day_of_month, time_of_day]
+    );
+
+    res.status(200).json({ message: 'Schedule saved successfully' });
+  } catch (err) {
+    console.error('Error saving report schedule:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
