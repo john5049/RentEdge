@@ -360,12 +360,42 @@ app.post('/validate-address', async (req, res) => {
   }
 });
 
-async function sendReportEmail(to, properties) {
+async function fetchZillowEstimates(address) {
+  const ZILLOW_API_KEY = '449866bf79a548efd5cfc5bc544a19e0'; // Replace with your actual token
+  const endpoint = `https://api.bridgedataoutput.com/property/v2/zestimate?address=${encodeURIComponent(address)}&access_token=${ZILLOW_API_KEY}`;
+
+  try {
+    const response = await fetch(endpoint);
+    const data = await response.json();
+
+    const z = data.bundle?.zestimate?.amount;
+    const rent = data.bundle?.rentZestimate?.amount;
+
+    return {
+      zestimate: z ? Math.round(z) : 'N/A',
+      rentZestimate: rent ? Math.round(rent) : 'N/A'
+    };
+  } catch (err) {
+    console.error(`❌ Zillow fetch error for ${address}:`, err);
+    return { zestimate: 'N/A', rentZestimate: 'N/A' };
+  }
+}
+
+async function sendReportEmail(to, rawProperties) {
+  const properties = await Promise.all(rawProperties.map(async (p) => {
+    const estimates = await fetchZillowEstimates(p.propertyAddress);
+    return {
+      address: p.propertyAddress,
+      zestimate: estimates.zestimate,
+      rentZestimate: estimates.rentZestimate
+    };
+  }));
+
   const rows = properties.map(p => `
     <tr>
       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
-      <td style="padding:10px;border:1px solid #ddd;">$${p.zestimate.toLocaleString()}</td>
-      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate.toLocaleString()}/mo</td>
+      <td style="padding:10px;border:1px solid #ddd;">$${p.zestimate}</td>
+      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate}/mo</td>
     </tr>
   `).join('');
 
@@ -386,7 +416,7 @@ async function sendReportEmail(to, properties) {
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to,
-    subject: "Your Weekly Property Report",
+    subject: "Your Scheduled Property Report",
     html,
   });
 }
@@ -468,11 +498,17 @@ cron.schedule('* * * * *', async () => {
       console.log('Match?', timeMatch, dayMatch);
 
       if (timeMatch && dayMatch) {
-        const [properties] = await db.promise().query(
-          `SELECT propertyAddress AS address, zestimate, rentZestimate
-           FROM properties WHERE userId = ?`,
-          [user.id]
-        );
+        const [rawProperties] = await db.promise().query(
+        `SELECT propertyAddress AS address FROM properties WHERE userId = ?`, [userId]);
+
+        const properties = await Promise.all(rawProperties.map(async (p) => {
+        const estimates = await fetchZillowEstimates(p.address);
+        return {
+          address: p.address,
+          zestimate: estimates.zestimate,
+          rentZestimate: estimates.rentZestimate
+        };
+}));
 
         if (properties.length > 0) {
           await sendReportEmail(user.email, properties);
