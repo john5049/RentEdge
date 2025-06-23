@@ -455,11 +455,12 @@ cron.schedule('* * * * *', async () => {
     for (const user of scheduledUsers) {
       console.log(`Checking ${user.email}: ${user.frequency} @ ${user.time_of_day}`);
       console.log('Current time:', currentTime);
-      console.log('Match?', timeMatch, dayMatch);
+      
 
       const timeMatch = user.time_of_day.slice(0, 5) === currentTime;
       console.log('Time match is:', timeMatch);
-      
+      console.log('Match?', timeMatch, dayMatch);
+
       const dayMatch = (
         user.frequency === 'daily' ||
         (user.frequency === 'weekly' && now.format('dddd') === user.day_of_week) ||
