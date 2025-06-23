@@ -382,21 +382,12 @@ async function fetchZillowEstimates(address) {
   }
 }
 
-async function sendReportEmail(to, rawProperties) {
-  const properties = await Promise.all(rawProperties.map(async (p) => {
-    const estimates = await fetchZillowEstimates(p.propertyAddress);
-    return {
-      address: p.propertyAddress,
-      zestimate: estimates.zestimate,
-      rentZestimate: estimates.rentZestimate
-    };
-  }));
-
+async function sendReportEmail(to, properties) {
   const rows = properties.map(p => `
     <tr>
       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
       <td style="padding:10px;border:1px solid #ddd;">$${p.zestimate}</td>
-      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate}/mo</td>
+      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate}</td>
     </tr>
   `).join('');
 
@@ -417,7 +408,7 @@ async function sendReportEmail(to, rawProperties) {
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to,
-    subject: "Your Scheduled Property Report",
+    subject: "Your Property Report",
     html,
   });
 }
