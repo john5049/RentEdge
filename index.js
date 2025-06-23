@@ -437,7 +437,6 @@ async function sendReportEmail(to, properties) {
 
   // HTML Email Template
   const html = `
-    <h2>Your RentEdge Property Report</h2>
     <p><strong>Total Property Value:</strong> ${totalZFormatted}</p>
     <p><strong>Total Monthly Rent Estimate:</strong> ${totalRFormatted}</p>
     <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
@@ -455,7 +454,7 @@ async function sendReportEmail(to, properties) {
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to,
-    subject: "Your Weekly Property Report",
+    subject: "RentEdge Property Report",
     html,
   });
 }
