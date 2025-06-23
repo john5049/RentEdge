@@ -478,7 +478,7 @@ cron.schedule('* * * * *', async () => {
       JOIN users u ON rs.user_id = u.id
     `);
 
-    const now = moment();
+    const now = moment().tz('America/New_York');
     const currentTime = now.format('HH:mm');
     const currentDay = now.format('dddd'); // e.g. "Monday"
     const currentDate = now.date(); // 1–31
@@ -489,7 +489,7 @@ cron.schedule('* * * * *', async () => {
       const timeMatch = time_of_day === currentTime;
       console.log('currentTime is: ', currentTime);
       console.log('time of day is: ', time_of_day);
-      
+
       let freqMatch = false;
 
       if (frequency === 'daily') {
