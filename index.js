@@ -17,6 +17,7 @@ const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9C
 
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
+const moment = require('moment');
 
 
 const transporter = nodemailer.createTransport({
@@ -40,6 +41,15 @@ const db = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
+
+async function getScheduledUsers() {
+  const [rows] = await db.promise().query(`
+    SELECT u.id, u.email, rs.frequency, rs.day_of_week, rs.day_of_month, rs.time_of_day
+    FROM users u
+    JOIN report_schedules rs ON u.id = rs.user_id
+  `);
+  return rows;
+}
 
 console.log('✅ MySQL connection pool created');
 
@@ -432,4 +442,39 @@ app.get('/users', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
+});
+
+cron.schedule('* * * * *', async () => {
+  const now = moment();
+  const currentTime = now.format('HH:mm');
+
+  try {
+    const scheduledUsers = await getScheduledUsers();
+
+    for (const user of scheduledUsers) {
+      const timeMatch = user.time_of_day.slice(0, 5) === currentTime;
+      const dayMatch = (
+        user.frequency === 'daily' ||
+        (user.frequency === 'weekly' && now.format('dddd') === user.day_of_week) ||
+        (user.frequency === 'monthly' && now.date() === user.day_of_month)
+      );
+
+      if (timeMatch && dayMatch) {
+        const [properties] = await db.promise().query(
+          `SELECT propertyAddress AS address, zestimate, rentZestimate
+           FROM properties WHERE userId = ?`,
+          [user.id]
+        );
+
+        if (properties.length > 0) {
+          await sendReportEmail(user.email, properties);
+          console.log(`✅ Sent report to ${user.email}`);
+        } else {
+          console.log(`ℹ️ No properties found for user ${user.email}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('❌ Error running report job:', err);
+  }
 });
