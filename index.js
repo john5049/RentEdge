@@ -401,7 +401,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
     // await db.query('DELETE FROM report_schedules WHERE user_id = ?', [userId]);
 
     // Insert new schedule
-    await db.query(
+    await db.promise().query(
       `INSERT INTO report_schedules 
         (user_id, frequency, day_of_week, day_of_month, time_of_day) 
         VALUES (?, ?, ?, ?, ?)`,
