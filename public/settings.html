@@ -250,7 +250,7 @@ label {
          <div class="report-card">
   <h2>📬 Schedule Your Report</h2>
 
-  <label>Frequency:</label>
+ <label>Frequency:</label>
   <div class="frequency-group">
     <button type="button" class="freq-btn selected" data-value="daily">Daily</button>
     <button type="button" class="freq-btn" data-value="weekly">Weekly</button>
@@ -268,6 +268,15 @@ label {
       <option value="Thursday">Thursday</option>
       <option value="Friday">Friday</option>
       <option value="Saturday">Saturday</option>
+    </select>
+  </div>
+
+  <div id="day-of-month-selector" style="display: none;">
+    <label for="monthDay">Send on day of the month:</label>
+    <select id="monthDay" name="monthDay">
+      <option value="">-- Select Day --</option>
+      <option value="last">Last day of month</option>
+      <!-- Dynamically add 1–31 -->
     </select>
   </div>
 
