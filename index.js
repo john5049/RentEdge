@@ -398,7 +398,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
 
   try {
     // Optional: delete any existing schedule for the user to avoid duplicates
-    await db.query('DELETE FROM report_schedules WHERE user_id = ?', [userId]);
+    // await db.query('DELETE FROM report_schedules WHERE user_id = ?', [userId]);
 
     // Insert new schedule
     await db.query(
