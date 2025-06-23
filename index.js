@@ -42,6 +42,8 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
+const ZILLOW_API_KEY = '449866bf79a548efd5cfc5bc544a19e0'; // Replace with your actual token
+
 async function getScheduledUsers() {
   const [rows] = await db.promise().query(`
     SELECT u.id, u.email, rs.frequency, rs.day_of_week, rs.day_of_month, rs.time_of_day
@@ -361,7 +363,6 @@ app.post('/validate-address', async (req, res) => {
 });
 
 async function fetchZillowEstimates(address) {
-  const ZILLOW_API_KEY = '449866bf79a548efd5cfc5bc544a19e0'; // Replace with your actual token
   const endpoint = `https://api.bridgedataoutput.com/property/v2/zestimate?address=${encodeURIComponent(address)}&access_token=${ZILLOW_API_KEY}`;
 
   try {
@@ -482,42 +483,54 @@ cron.schedule('* * * * *', async () => {
   try {
     const scheduledUsers = await getScheduledUsers();
 
-    for (const user of scheduledUsers) {
-      console.log(`Checking ${user.email}: ${user.frequency} @ ${user.time_of_day}`);
-      console.log('Current time:', currentTime);
-      
+    for (const schedule of schedules) {
+    const userId = schedule.user_id;
+    const email = schedule.email;
 
-      const timeMatch = user.time_of_day.slice(0, 5) === currentTime;
-      console.log('Time match is:', timeMatch);
-      const dayMatch = (
-        user.frequency === 'daily' ||
-        (user.frequency === 'weekly' && now.format('dddd') === user.day_of_week) ||
-        (user.frequency === 'monthly' && now.date() === user.day_of_month)
-      );
-      console.log('Day match is:', dayMatch);
-      console.log('Match?', timeMatch, dayMatch);
+  const [properties] = await db.promise().query(
+    'SELECT propertyAddress FROM properties WHERE userId = ?', [userId]
+  );
 
-      if (timeMatch && dayMatch) {
-        const [rawProperties] = await db.promise().query(
-        `SELECT propertyAddress AS address FROM properties WHERE userId = ?`, [user.id]);
+  if (!properties.length) {
+    console.log(`ℹ️ No properties found for user ${email}`);
+    continue;
+  }
 
-        const properties = await Promise.all(rawProperties.map(async (p) => {
-        const estimates = await fetchZillowEstimates(p.address);
-        return {
-          address: p.address,
-          zestimate: estimates.zestimate,
-          rentZestimate: estimates.rentZestimate
-        };
-}));
+  // Zillow API call per property
+  const reportData = [];
+  for (const p of properties) {
+    const address = p.propertyAddress;
 
-        if (properties.length > 0) {
-          await sendReportEmail(user.email, properties);
-          console.log(`✅ Sent report to ${user.email}`);
-        } else {
-          console.log(`ℹ️ No properties found for user ${user.email}`);
-        }
-      }
+    try {
+      const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${ZILLOW_API_KEY}`
+        },
+        body: JSON.stringify({ address })
+      });
+
+      const data = await zillowRes.json();
+      const zestimate = data.zestimate?.amount || 'N/A';
+      const rentZestimate = data.rentZestimate?.amount || 'N/A';
+
+      reportData.push({
+        address,
+        zestimate,
+        rentZestimate
+      });
+
+    } catch (err) {
+      console.error(`❌ Error fetching Zestimate for ${address}:`, err);
+      reportData.push({ address, zestimate: 'Error', rentZestimate: 'Error' });
     }
+  }
+
+  // Send the email
+  await sendReportEmail(email, reportData);
+}
+
   } catch (err) {
     console.error('❌ Error running report job:', err);
   }
