@@ -486,9 +486,12 @@ cron.schedule('* * * * *', async () => {
     for (const schedule of schedules) {
       const { frequency, day_of_week, day_of_month, time_of_day, user_id, email } = schedule;
 
-      const timeMatch = time_of_day === currentTime;
+      const trimmedTime = time_of_day.slice(0, 5); // "HH:mm" from "HH:mm:ss"
+      const timeMatch = trimmedTime === currentTime;
+
       console.log('currentTime is: ', currentTime);
       console.log('time of day is: ', time_of_day);
+      console.log('trimmed time is: ', trimmedTime);
 
       let freqMatch = false;
 
