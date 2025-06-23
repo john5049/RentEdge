@@ -39,7 +39,7 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-}).promise();
+});
 
 console.log('✅ MySQL connection pool created');
 
