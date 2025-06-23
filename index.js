@@ -499,7 +499,7 @@ cron.schedule('* * * * *', async () => {
 
       if (timeMatch && dayMatch) {
         const [rawProperties] = await db.promise().query(
-        `SELECT propertyAddress AS address FROM properties WHERE userId = ?`, [user.userId]);
+        `SELECT propertyAddress AS address FROM properties WHERE userId = ?`, [user.id]);
 
         const properties = await Promise.all(rawProperties.map(async (p) => {
         const estimates = await fetchZillowEstimates(p.address);
