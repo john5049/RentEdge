@@ -402,10 +402,14 @@ app.post('/api/reporting/schedule', async (req, res) => {
 
     // Insert new schedule
     await db.promise().query(
-      `INSERT INTO report_schedules 
-        (user_id, frequency, day_of_week, day_of_month, time_of_day) 
-        VALUES (?, ?, ?, ?, ?)`,
-      [userId, frequency, day_of_week, day_of_month, time_of_day]
+      `INSERT INTO report_schedules (user_id, frequency, day_of_week, day_of_month, time_of_day)
+   VALUES (?, ?, ?, ?, ?)
+   ON DUPLICATE KEY UPDATE 
+     frequency = VALUES(frequency),
+     day_of_week = VALUES(day_of_week),
+     day_of_month = VALUES(day_of_month),
+     time_of_day = VALUES(time_of_day)`,
+  [userId, frequency, day_of_week, day_of_month, time_of_day]
     );
 
     res.status(200).json({ message: 'Schedule saved successfully' });
