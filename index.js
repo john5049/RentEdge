@@ -466,61 +466,84 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
+// Cron job: runs every minute
 cron.schedule('* * * * *', async () => {
-  console.log('⏰ Cron job running at', new Date().toLocaleString());
-  const now = moment.tz("America/New_York");
-  const currentTime = now.format('HH:mm');
+  console.log(`⏰ Cron job running at ${new Date().toLocaleString()}`);
 
   try {
-    const scheduledUsers = await getScheduledUsers();
+    // 1. Get all active report schedules with associated emails
+    const [schedules] = await db.promise().query(`
+      SELECT rs.*, u.email 
+      FROM report_schedules rs
+      JOIN users u ON rs.user_id = u.id
+    `);
+
+    const now = moment();
+    const currentTime = now.format('HH:mm');
+    const currentDay = now.format('dddd'); // e.g. "Monday"
+    const currentDate = now.date(); // 1–31
 
     for (const schedule of schedules) {
-    const userId = schedule.user_id;
-    const email = schedule.email;
+      const { frequency, day_of_week, day_of_month, time_of_day, user_id, email } = schedule;
 
-  const [properties] = await db.promise().query(
-    'SELECT propertyAddress FROM properties WHERE userId = ?', [userId]
-  );
+      const timeMatch = time_of_day === currentTime;
+      let freqMatch = false;
 
-  if (!properties.length) {
-    console.log(`ℹ️ No properties found for user ${email}`);
-    continue;
-  }
+      if (frequency === 'daily') {
+        freqMatch = true;
+      } else if (frequency === 'weekly' && day_of_week === currentDay) {
+        freqMatch = true;
+      } else if (frequency === 'monthly' && parseInt(day_of_month) === currentDate) {
+        freqMatch = true;
+      }
 
-  // Zillow API call per property
-  const reportData = [];
-  for (const p of properties) {
-    const address = p.propertyAddress;
+      console.log(`Checking ${email}: ${frequency} @ ${time_of_day}`);
+      if (!(freqMatch && timeMatch)) continue;
 
-    try {
-      const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${ZILLOW_API_KEY}`
-        },
-        body: JSON.stringify({ address })
-      });
+      // 2. Fetch properties for this user
+      const [properties] = await db.promise().query(
+        'SELECT propertyAddress FROM properties WHERE userId = ?', [user_id]
+      );
 
-      const data = await zillowRes.json();
-      const zestimate = data.zestimate?.amount || 'N/A';
-      const rentZestimate = data.rentZestimate?.amount || 'N/A';
+      if (!properties.length) {
+        console.log(`ℹ️ No properties found for user ${email}`);
+        continue;
+      }
 
-      reportData.push({
-        address,
-        zestimate,
-        rentZestimate
-      });
+      // 3. Query Zillow API for each property
+      const reportData = [];
+      for (const p of properties) {
+        const address = p.propertyAddress;
 
-    } catch (err) {
-      console.error(`❌ Error fetching Zestimate for ${address}:`, err);
-      reportData.push({ address, zestimate: 'Error', rentZestimate: 'Error' });
+        try {
+          const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${ZILLOW_API_KEY}`
+            },
+            body: JSON.stringify({ address })
+          });
+
+          const data = await zillowRes.json();
+          const zestimate = data.zestimate?.amount || 'N/A';
+          const rentZestimate = data.rentZestimate?.amount || 'N/A';
+
+          reportData.push({
+            address,
+            zestimate,
+            rentZestimate
+          });
+        } catch (err) {
+          console.error(`❌ Zillow API error for ${address}:`, err);
+          reportData.push({ address, zestimate: 'Error', rentZestimate: 'Error' });
+        }
+      }
+
+      // 4. Send the email
+      await sendReportEmail(email, reportData);
+      console.log(`📬 Report sent to ${email}`);
     }
-  }
-
-  // Send the email
-  await sendReportEmail(email, reportData);
-}
 
   } catch (err) {
     console.error('❌ Error running report job:', err);
