@@ -445,6 +445,7 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 
 cron.schedule('* * * * *', async () => {
+  console.log('⏰ Cron job running at', new Date().toLocaleString());
   const now = moment();
   const currentTime = now.format('HH:mm');
 
@@ -452,7 +453,13 @@ cron.schedule('* * * * *', async () => {
     const scheduledUsers = await getScheduledUsers();
 
     for (const user of scheduledUsers) {
+      console.log(`Checking ${user.email}: ${user.frequency} @ ${user.time_of_day}`);
+      console.log('Current time:', currentTime);
+      console.log('Match?', timeMatch, dayMatch);
+
       const timeMatch = user.time_of_day.slice(0, 5) === currentTime;
+      console.log('Time match is:', timeMatch);
+      
       const dayMatch = (
         user.frequency === 'daily' ||
         (user.frequency === 'weekly' && now.format('dddd') === user.day_of_week) ||
