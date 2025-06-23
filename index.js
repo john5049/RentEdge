@@ -487,6 +487,9 @@ cron.schedule('* * * * *', async () => {
       const { frequency, day_of_week, day_of_month, time_of_day, user_id, email } = schedule;
 
       const timeMatch = time_of_day === currentTime;
+      console.log('currentTime is: ', currentTime);
+      console.log('time of day is: ', time_of_day);
+      
       let freqMatch = false;
 
       if (frequency === 'daily') {
