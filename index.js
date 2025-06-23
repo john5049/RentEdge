@@ -415,8 +415,8 @@ async function sendReportEmail(to, properties) {
   const rows = properties.map(p => `
     <tr>
       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
-      <td style="padding:10px;border:1px solid #ddd;">$${p.zestimate}</td>
-      <td style="padding:10px;border:1px solid #ddd;">$${p.rentZestimate}</td>
+      <td style="padding:10px;border:1px solid #ddd;">${p.zestimate}</td>
+      <td style="padding:10px;border:1px solid #ddd;">${p.rentZestimate}</td>
     </tr>
   `).join('');
 
