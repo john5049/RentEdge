@@ -412,6 +412,21 @@ async function fetchZillowEstimates(address) {
 }
 
 async function sendReportEmail(to, properties) {
+// Calculate totals
+  let totalZestimate = 0;
+  let totalRentZestimate = 0;
+
+  properties.forEach(p => {
+    const z = Number(String(p.zestimate).replace(/[^0-9.-]+/g, ""));
+    const r = Number(String(p.rentZestimate).replace(/[^0-9.-]+/g, ""));
+    if (!isNaN(z)) totalZestimate += z;
+    if (!isNaN(r)) totalRentZestimate += r;
+  });
+
+  const totalZFormatted = `$${totalZestimate.toLocaleString()}`;
+  const totalRFormatted = `$${totalRentZestimate.toLocaleString()}/mo`;
+
+  // Generate table rows
   const rows = properties.map(p => `
     <tr>
       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
@@ -420,8 +435,11 @@ async function sendReportEmail(to, properties) {
     </tr>
   `).join('');
 
+  // HTML Email Template
   const html = `
     <h2>Your RentEdge Property Report</h2>
+    <p><strong>Total Property Value:</strong> ${totalZFormatted}</p>
+    <p><strong>Total Monthly Rent Estimate:</strong> ${totalRFormatted}</p>
     <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
       <thead>
         <tr style="background-color: #4CAF50; color: white;">
@@ -437,7 +455,7 @@ async function sendReportEmail(to, properties) {
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to,
-    subject: "Your Property Report",
+    subject: "Your Weekly Property Report",
     html,
   });
 }
