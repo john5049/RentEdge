@@ -101,7 +101,8 @@ app.post('/login', (req, res) => {
     console.log("My user is:", user.id, user.username);
     const match = await bcrypt.compare(password, user.password);
     console.log(match);
-    if (match) {  
+    if (match) {
+      req.session.userId = user.id;
       return res.json({ id: user.id, username: user.username});
     } else {
       return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
