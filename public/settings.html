@@ -298,41 +298,57 @@ label {
 <script>
   let selectedFrequency = "daily";
 
+  // Dynamically populate 1–31 in the month dropdown
+  const monthDaySelect = document.getElementById("monthDay");
+  for (let i = 1; i <= 31; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.text = i;
+    monthDaySelect.appendChild(option);
+  }
+
+  // Frequency toggle logic
   document.querySelectorAll(".freq-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".freq-btn").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
       selectedFrequency = btn.dataset.value;
 
-      // Show/hide day selector
+      // Show/hide relevant selectors
       document.getElementById("day-selector").style.display = selectedFrequency === "weekly" ? "block" : "none";
+      document.getElementById("day-of-month-selector").style.display = selectedFrequency === "monthly" ? "block" : "none";
     });
   });
 
   document.getElementById("save-report-btn").addEventListener("click", async () => {
     const day = document.getElementById("day").value || null;
-    const time = document.getElementById("time").value + ":00";
+    const monthDayRaw = document.getElementById("monthDay").value || null;
+    const dayOfMonth = (monthDayRaw === "last") ? 31 : parseInt(monthDayRaw) || null;
+    const time = document.getElementById("time").value;
+
+    if (!time) return alert("Please select a time.");
 
     try {
-      const res = await fetch('/api/reporting/schedule', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/reporting/schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           frequency: selectedFrequency,
-          day_of_week: day,
-          time_of_day: time
+          day_of_week: selectedFrequency === "weekly" ? day : null,
+          day_of_month: selectedFrequency === "monthly" ? dayOfMonth : null,
+          time_of_day: time + ":00"
         })
       });
 
-      const result = await res.json();
-      if (res.ok) {
+      const result = await response.json();
+      if (response.ok) {
         alert("✅ Schedule saved!");
       } else {
-        alert("Error: " + result.error);
+        alert("❌ " + result.error);
       }
     } catch (err) {
       console.error(err);
-      alert("Error saving schedule.");
+      alert("⚠️ Could not save schedule.");
     }
   });
 </script>
