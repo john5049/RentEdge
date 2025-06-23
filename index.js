@@ -522,32 +522,39 @@ cron.schedule('* * * * *', async () => {
       // 3. Query Zillow API for each property
       const reportData = [];
       for (const p of properties) {
-        const address = p.propertyAddress;
+      const zpid = p.zpid;
 
-        try {
-          const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${ZILLOW_API_KEY}`
-            },
-            body: JSON.stringify({ address })
-          });
+      try {
+        const zillowRes = await fetch(`https://api.bridgedataoutput.com/api/v2/zestimates_v2/zestimates`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${ZILLOW_API_KEY}`
+          },
+          body: JSON.stringify({ zpid })  // ✅ Use zpid here
+        });
 
-          const data = await zillowRes.json();
-          const zestimate = data.zestimate?.amount || 'N/A';
-          const rentZestimate = data.rentZestimate?.amount || 'N/A';
+        const data = await zillowRes.json();
+        console.log(`📦 Zillow API response for ZPID ${zpid}:`, data);
 
-          reportData.push({
-            address,
-            zestimate,
-            rentZestimate
-          });
-        } catch (err) {
-          console.error(`❌ Zillow API error for ${address}:`, err);
-          reportData.push({ address, zestimate: 'Error', rentZestimate: 'Error' });
-        }
+        const zestimate = data.zestimate?.amount ? `$${data.zestimate.amount.toLocaleString()}` : 'Not Available';
+        const rentZestimate = data.rentZestimate?.amount ? `$${data.rentZestimate.amount.toLocaleString()}` : 'Not Available';
+
+        reportData.push({
+          address: p.propertyAddress,
+          zestimate,
+          rentZestimate
+        });
+
+      } catch (err) {
+        console.error(`❌ Zillow API error for ZPID ${zpid}:`, err);
+        reportData.push({
+          address: p.propertyAddress,
+          zestimate: 'Error',
+          rentZestimate: 'Error'
+        });
       }
+    }
 
       // 4. Send the email
       await sendReportEmail(email, reportData);
