@@ -17,7 +17,7 @@ const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9C
 
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 
 const transporter = nodemailer.createTransport({
@@ -446,7 +446,7 @@ app.listen(PORT, '0.0.0.0', () => {
 
 cron.schedule('* * * * *', async () => {
   console.log('⏰ Cron job running at', new Date().toLocaleString());
-  const now = moment();
+  const now = moment.tz("America/New_York");
   const currentTime = now.format('HH:mm');
 
   try {
