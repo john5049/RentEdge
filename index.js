@@ -384,6 +384,13 @@ app.post('/api/reporting/schedule', async (req, res) => {
   const { frequency, day_of_week, day_of_month, time_of_day } = req.body;
   const userId = req.session?.userId || req.user?.id;
 
+  console.log("Incoming request:");
+  console.log("userId:", userId);
+  console.log("frequency:", frequency);
+  console.log("time_of_day:", time_of_day);
+  console.log("day_of_week:", day_of_week);
+  console.log("day_of_month:", day_of_month);
+
   if (!userId || !frequency || !time_of_day) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
