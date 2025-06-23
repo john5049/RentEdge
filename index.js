@@ -497,6 +497,8 @@ cron.schedule('* * * * *', async () => {
         freqMatch = true;
       }
 
+      console.log('Frequency match is: ', freqMatch);
+
       console.log(`Checking ${email}: ${frequency} @ ${time_of_day}`);
       if (!(freqMatch && timeMatch)) continue;
 
