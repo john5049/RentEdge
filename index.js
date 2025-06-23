@@ -511,7 +511,7 @@ cron.schedule('* * * * *', async () => {
 
       // 2. Fetch properties for this user
       const [properties] = await db.promise().query(
-        'SELECT propertyAddress FROM properties WHERE userId = ?', [user_id]
+        'SELECT propertyAddress, zpid FROM properties WHERE userId = ?', [user_id]
       );
 
       if (!properties.length) {
