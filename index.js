@@ -160,6 +160,7 @@ app.post('/forgot-password', async (req, res) => {
   try {
     // Generate secure token
     const token = crypto.randomBytes(32).toString('hex');
+    console.log("Crypto token is: ", token);
     const expires = new Date(Date.now() + 3600000); // 1 hour from now
 
     // Save token + expiration to DB
