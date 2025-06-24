@@ -153,38 +153,51 @@ app.post('/login', (req, res) => {
 });
 
 // Route to request password reset
-app.post('/forgot-password', async (req, res) => {
+app.post('/request-password-reset', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email is required' });
 
   try {
-    // Generate secure token
-    const token = crypto.randomBytes(32).toString('hex');
-    console.log("Crypto token is: ", token);
-    const expires = new Date(Date.now() + 3600000); // 1 hour from now
+    // Check if user exists
+    const [rows] = await db.promise().query('SELECT id FROM users WHERE email = ?', [email]);
+    if (rows.length === 0) {
+      return res.status(200).json({ message: 'If this email is registered, a reset link has been sent.' }); // Don't reveal whether email exists
+    }
 
-    // Save token + expiration to DB
+    const userId = rows[0].id;
+
+    // Generate token
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    // Save token to DB
     await db.promise().query(
-      'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?',
-      [token, expires, email]
+      'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?',
+      [token, expires, userId]
     );
 
-    // Send email
-    const resetLink = `https://www.rentedge.net/forgot-password.html?token=${token}`;
-    await transporter.sendMail({
-      from: '"RentEdge Support" <john@akridgeenterprises.com>',
-      to: email,
-      subject: 'Reset Your RentEdge Password',
-      html: `
-        <p>You requested a password reset.</p>
-        <p>Click the link below to reset your password. This link expires in 1 hour.</p>
-        <a href="${resetLink}">${resetLink}</a>
-      `
+    // Email the token
+    const resetLink = `https://rentedge.net/forgot-password.html?token=${token}`;
+
+    // Set up mailer
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'youremail@gmail.com',
+        pass: 'your-app-password' // or use environment variables
+      }
     });
 
-    res.json({ message: 'Password reset email sent!' });
+    await transporter.sendMail({
+      from: 'john@akridgeenterprises.com',
+      to: email,
+      subject: 'Reset your password',
+      html: `<p>Click the link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`
+    });
+
+    res.json({ message: 'Check your email for a password reset link.' });
   } catch (err) {
-    console.error('❌ Error sending reset email:', err);
+    console.error('❌ Error sending reset link:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });
