@@ -169,6 +169,7 @@ app.post('/request-password-reset', async (req, res) => {
     // Generate token
     const token = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    console.log("Your token is: ",token);
 
     // Save token to DB
     await db.promise().query(
@@ -177,7 +178,7 @@ app.post('/request-password-reset', async (req, res) => {
     );
 
     // Email the token
-    const resetLink = `https://rentedge.net/forgot-password.html?token=${token}`;
+    const resetLink = `https://rentedge.net/reset-password.html?token=${token}`;
 
     // Set up mailer
     const transporter = nodemailer.createTransport({
