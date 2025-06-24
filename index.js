@@ -178,7 +178,7 @@ app.post('/request-password-reset', async (req, res) => {
     );
 
     // Email the token
-    const resetLink = `https://rentedge.net/reset-password.html?token=${token}`;
+    const resetLink = `https://www.rentedge.net/reset-password.html?token=${token}`;
 
     // Set up mailer
     const transporter = nodemailer.createTransport({
