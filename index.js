@@ -183,8 +183,8 @@ app.post('/request-password-reset', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: 'youremail@gmail.com',
-        pass: 'your-app-password' // or use environment variables
+        user: 'john@akridgeenterprises.com',
+        pass: 'kdigndhcupbaazpb' // or use environment variables
       }
     });
 
