@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 
 const session = require('express-session');
@@ -149,6 +150,73 @@ app.post('/login', (req, res) => {
       return res.status(401).json({ error: 'Incorrect password' }); // ✅ FIXED
     }
   });
+});
+
+// Route to request password reset
+app.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  try {
+    // Generate secure token
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save token + expiration to DB
+    await db.promise().query(
+      'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?',
+      [token, expires, email]
+    );
+
+    // Send email
+    const resetLink = `https://www.rentedge.net/forgot-password.html?token=${token}`;
+    await transporter.sendMail({
+      from: '"RentEdge Support" <john@akridgeenterprises.com>',
+      to: email,
+      subject: 'Reset Your RentEdge Password',
+      html: `
+        <p>You requested a password reset.</p>
+        <p>Click the link below to reset your password. This link expires in 1 hour.</p>
+        <a href="${resetLink}">${resetLink}</a>
+      `
+    });
+
+    res.json({ message: 'Password reset email sent!' });
+  } catch (err) {
+    console.error('❌ Error sending reset email:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+  if (!token || !newPassword) return res.status(400).json({ error: 'Missing fields' });
+
+  try {
+    // Validate token
+    const [rows] = await db.promise().query(
+      'SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()',
+      [token]
+    );
+
+    if (rows.length === 0) return res.status(400).json({ error: 'Invalid or expired token' });
+
+    const userId = rows[0].id;
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password and clear token
+    await db.promise().query(
+      'UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
+      [hashedPassword, userId]
+    );
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('❌ Error resetting password:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // POST /api/feature-request
