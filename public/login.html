@@ -109,6 +109,23 @@
       padding: 15px 0;
       font-size: 14px;
     }
+
+    .forgot-password-link {
+      text-align: right;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .forgot-password-link a {
+      font-size: 14px;
+      color: #1e90ff;
+      text-decoration: none;
+    }
+
+    .forgot-password-link a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
 
@@ -127,6 +144,9 @@
         <input type="password" name="password" required />
         <button class="login-button" type="submit">Login</button>
       </form>
+      <div class="forgot-password-link">
+        <a href="/forgot-password.html">Forgot your password?</a>
+      </div>
       <div class="register-link">
         Not a member? <a href="/register.html">Register here</a>
       </div>
