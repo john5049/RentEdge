@@ -255,6 +255,7 @@ label {
     <button type="button" class="freq-btn selected" data-value="daily">Daily</button>
     <button type="button" class="freq-btn" data-value="weekly">Weekly</button>
     <button type="button" class="freq-btn" data-value="monthly">Monthly</button>
+    <button type="button" class="freq-btn" data-value="none">None</button>
   </div>
 
   <div id="day-selector" style="display: none;">
@@ -318,6 +319,7 @@ label {
       document.getElementById("day-selector").style.display = selectedFrequency === "weekly" ? "block" : "none";
       document.getElementById("day-of-month-selector").style.display = selectedFrequency === "monthly" ? "block" : "none";
     });
+
   });
 
   document.getElementById("save-report-btn").addEventListener("click", async () => {
