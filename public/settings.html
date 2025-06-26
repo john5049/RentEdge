@@ -328,7 +328,7 @@ label {
     const dayOfMonth = (monthDayRaw === "last") ? 31 : parseInt(monthDayRaw) || null;
     const time = document.getElementById("time").value;
 
-    if (!time) return alert("Please select a time.");
+    if (selectedFrequency !== "none" && !time) return alert("Please select a time.");
 
     try {
       const response = await fetch("/api/reporting/schedule", {
