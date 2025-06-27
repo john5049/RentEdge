@@ -521,6 +521,10 @@
 
    <div class="analytics-container">
     <h1>Market Valuation</h1>
+    <div id="totals" style="margin-bottom: 20px;">
+      <strong>Total Zestimate:</strong> $<span id="total-zestimate">0</span><br>
+      <strong>Total Rent Zestimate:</strong> $<span id="total-rent-zestimate">0</span>
+    </div>
     <ul id="analytics-list" style="list-style: none; padding: 0; margin-top: 20px;"></ul>
    </div>
 </div>
@@ -567,13 +571,16 @@
     const apiKey = "634d8a64c241417086d6e4540e1a984f"; // your Geoapify API key
 
     async function loadProperties() {
-      try {
+  try {
     const response = await fetch(`/properties?userId=${userId}`);
     const properties = await response.json();
 
     propertyList.innerHTML = '';
     const analyticsList = document.getElementById('analytics-list');
     analyticsList.innerHTML = '';
+
+    let totalZestimate = 0;
+    let totalRentZestimate = 0;
 
     for (const property of properties) {
       const listItem = document.createElement('li');
@@ -585,62 +592,60 @@
 
       const addressSpan = document.createElement('span');
       addressSpan.textContent = property.propertyAddress;
-
       addressSpan.style.flex = '1';
 
-const editBtn = document.createElement('button');
-editBtn.textContent = 'Edit';
-editBtn.style.marginLeft = '10px';
-editBtn.style.backgroundColor = '#C7CEEA';
-editBtn.style.color = 'white';
-editBtn.style.border = 'none';
-editBtn.style.borderRadius = '5px';
-editBtn.style.padding = '5px 10px';
-editBtn.style.cursor = 'pointer';
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+      editBtn.style.marginLeft = '10px';
+      editBtn.style.backgroundColor = '#C7CEEA';
+      editBtn.style.color = 'white';
+      editBtn.style.border = 'none';
+      editBtn.style.borderRadius = '5px';
+      editBtn.style.padding = '5px 10px';
+      editBtn.style.cursor = 'pointer';
 
-let isEditing = false;
+      let isEditing = false;
 
-editBtn.onclick = async () => {
-  if (!isEditing) {
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = property.propertyAddress;
-    input.style.flex = '1';
-    listItem.replaceChild(input, addressSpan);
-    editBtn.textContent = 'Save';
-    isEditing = true;
-  } else {
-    const newAddress = listItem.querySelector('input').value.trim();
-    if (!newAddress) {
-      alert("Address cannot be empty");
-      return;
-    }
+      editBtn.onclick = async () => {
+        if (!isEditing) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.value = property.propertyAddress;
+          input.style.flex = '1';
+          listItem.replaceChild(input, addressSpan);
+          editBtn.textContent = 'Save';
+          isEditing = true;
+        } else {
+          const newAddress = listItem.querySelector('input').value.trim();
+          if (!newAddress) {
+            alert("Address cannot be empty");
+            return;
+          }
 
-    // Try to get new zpid (or retain existing one)
-    let zpid = await fetchZpid(newAddress);
-    if (!zpid) {
-      zpid = prompt(`We couldn't find the ZPID for '${property}'. Please enter the ZPID manually:`);
-      if (!zpid) return;
-    }
+          let zpid = await fetchZpid(newAddress);
+          if (!zpid) {
+            zpid = prompt(`We couldn't find the ZPID for '${property}'. Please enter the ZPID manually:`);
+            if (!zpid) return;
+          }
 
-    const response = await fetch('/update-property', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: property.id,
-        userId,
-        propertyAddress: newAddress,
-        zpid
-      })
-    });
+          const response = await fetch('/update-property', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: property.id,
+              userId,
+              propertyAddress: newAddress,
+              zpid
+            })
+          });
 
-    if (response.ok) {
-      loadProperties();
-    } else {
-      alert("Failed to update property");
-    }
-  }
-};
+          if (response.ok) {
+            loadProperties();
+          } else {
+            alert("Failed to update property");
+          }
+        }
+      };
 
       const deleteBtn = document.createElement('button');
       deleteBtn.textContent = 'Delete';
@@ -664,11 +669,12 @@ editBtn.onclick = async () => {
       listItem.appendChild(editBtn);
       propertyList.appendChild(listItem);
 
-      // NEW: Fetch Zestimate and Rent Zestimate using the zpid
       if (property.zpid) {
         const zillowData = await fetchZillowData(property.zpid);
-        console.log('Here is my zillow data' + zillowData);
         if (zillowData) {
+          totalZestimate += Number(zillowData.zestimate) || 0;
+          totalRentZestimate += Number(zillowData.rentalZestimate) || 0;
+
           const analyticsItem = document.createElement('li');
           analyticsItem.style.padding = '8px';
           analyticsItem.style.borderBottom = '1px solid #eee';
@@ -681,10 +687,23 @@ editBtn.onclick = async () => {
         }
       }
     }
+
+    // Insert totals above the analytics list
+    const totalsDiv = document.createElement('div');
+    totalsDiv.style.marginBottom = '20px';
+    totalsDiv.innerHTML = `
+      <h3>Total Market Valuations</h3>
+      <p>Total Zestimate: <strong style="color: green;">$${totalZestimate.toLocaleString()}</strong></p>
+      <p>Total Rent Zestimate: <strong style="color: blue;">$${totalRentZestimate.toLocaleString()}</strong></p>
+    `;
+
+    analyticsList.parentNode.insertBefore(totalsDiv, analyticsList);
+
   } catch (error) {
     console.error('Error loading properties:', error);
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     token = getAccessToken();
