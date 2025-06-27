@@ -181,6 +181,7 @@
   overflow-y: auto;
   border-radius: 10px;
   box-sizing: border-box;
+  padding-top: 5px;
 }
 
     /* Custom Scrollbar Styling */
@@ -690,7 +691,6 @@
     const totalsDiv = document.createElement('div');
     totalsDiv.style.marginBottom = '20px';
     totalsDiv.innerHTML = `
-      <h3>Total Market Valuations</h3>
       <p>Total Zestimate: <strong style="color: green;">$${totalZestimate.toLocaleString()}</strong></p>
       <p>Total Rent Zestimate: <strong style="color: blue;">$${totalRentZestimate.toLocaleString()}</strong></p>
     `;
