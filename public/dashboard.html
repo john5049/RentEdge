@@ -529,31 +529,33 @@
       margin-bottom: 20px;
     }
 
+    .navbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .navbar-right {
+      align-self: flex-end;
+    }
+
+    .dropbtn {
+      width: auto;
+    }
+
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      right: 0;
+      left: auto;
+    }
+
     input#autocomplete-input,
     .property-input,
     .autocomplete-input {
       width: 100% !important;
       box-sizing: border-box;
-    }
-    
-    .navbar {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .dropbtn {
-      width: 100%;
-      text-align: left;
-    }
-
-    .dropdown {
-      position: relative;
-      align-self: flex-end;
-    }
-
-    .dropdown-content {
-      left: auto;
-      right: 0;
     }
   }
 
