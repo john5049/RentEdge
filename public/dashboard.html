@@ -474,6 +474,10 @@
   border: 1px solid #ccc;
 }
 
+.property-input{
+  width: 60%;
+}
+
 @media (max-width: 768px) {
     .dashboard-layout {
       flex-direction: column;
@@ -923,7 +927,6 @@ async function processCSV(text) {
       li.textContent = feature.properties.formatted;
       li.style.padding = "8px";
       li.style.cursor = "pointer";
-      li.style.font = "italic";
       li.style.borderBottom = "1px solid #eee";
       li.onclick = () => {
         input.value = feature.properties.formatted;
