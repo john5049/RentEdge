@@ -913,7 +913,7 @@ async function processCSV(text) {
       return;
     }
 
-    const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&limit=10&apiKey=${apiKey}`);
+    const response = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(query)}&limit=6&apiKey=${apiKey}`);
     const data = await response.json();
     console.log('API response data: ' + data);
 
