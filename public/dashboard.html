@@ -797,7 +797,12 @@
     }
 
     // Insert totals above the analytics list
+    let oldTotals = document.getElementById('totals-summary');
+    if (oldTotals) oldTotals.remove();
+
+    // Create new totals div
     const totalsDiv = document.createElement('div');
+    totalsDiv.id = 'totals-summary'; // So we can identify it next time
     totalsDiv.style.marginBottom = '20px';
     totalsDiv.innerHTML = `
       <p>Total Zestimate: <strong style="color: green;">$${totalZestimate.toLocaleString()}</strong></p>
