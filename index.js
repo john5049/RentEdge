@@ -495,6 +495,8 @@ async function fetchZillowEstimates(address) {
 }
 
 async function sendReportEmail(to, properties) {
+const recipientList = Array.isArray(to) ? to.filter(Boolean).join(',') : to;
+
 // Calculate totals
   let totalZestimate = 0;
   let totalRentZestimate = 0;
@@ -536,14 +538,14 @@ async function sendReportEmail(to, properties) {
 
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
-    to,
+    to: recipientList,
     subject: "RentEdge Property Report",
     html,
   });
 }
 
 app.post('/api/reporting/schedule', async (req, res) => {
-  const { frequency, day_of_week, day_of_month, time_of_day } = req.body;
+  const { frequency, day_of_week, day_of_month, time_of_day, recipients } = req.body;
   const userId = req.session?.userId || req.user?.id;
 
   console.log("Incoming request:");
@@ -552,6 +554,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
   console.log("time_of_day:", time_of_day);
   console.log("day_of_week:", day_of_week);
   console.log("day_of_month:", day_of_month);
+  console.log("recipients:", recipients);
 
   if (!userId || !frequency || !time_of_day) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -571,14 +574,15 @@ app.post('/api/reporting/schedule', async (req, res) => {
 
     // Insert new schedule
     await db.promise().query(
-      `INSERT INTO report_schedules (user_id, frequency, day_of_week, day_of_month, time_of_day)
-   VALUES (?, ?, ?, ?, ?)
+      `INSERT INTO report_schedules (user_id, frequency, day_of_week, day_of_month, time_of_day, additional_recipients)
+   VALUES (?, ?, ?, ?, ?, ?)
    ON DUPLICATE KEY UPDATE 
      frequency = VALUES(frequency),
      day_of_week = VALUES(day_of_week),
      day_of_month = VALUES(day_of_month),
-     time_of_day = VALUES(time_of_day)`,
-  [userId, frequency, day_of_week, day_of_month, time_of_day]
+     time_of_day = VALUES(time_of_day),
+     additional_recipients = VALUES(additional_recipients)`,
+  [userId, frequency, day_of_week, day_of_month, time_of_day, JSON.stringify(recipients)]
     );
 
     res.status(200).json({ message: 'Schedule saved successfully' });
