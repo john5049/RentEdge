@@ -536,6 +536,8 @@ const recipientList = Array.isArray(to) ? to.filter(Boolean).join(',') : to;
     </table>
   `;
 
+  console.log("Sending report to:", recipientList);
+
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to: recipientList,
@@ -614,7 +616,7 @@ cron.schedule('* * * * *', async () => {
   try {
     // 1. Get all active report schedules with associated emails
     const [schedules] = await db.promise().query(`
-      SELECT rs.*, u.email 
+      SELECT rs.*, u.email AS primary_email
       FROM report_schedules rs
       JOIN users u ON rs.user_id = u.id
     `);
@@ -679,9 +681,13 @@ cron.schedule('* * * * *', async () => {
         reportData.push({ address, zestimate: 'N/A', rentZestimate: 'N/A' });
       }
     }
+      const additional = (schedule.recipients || "")
+      .split(",")
+      .map(e => e.trim())
+      .filter(e => e.includes("@"));
 
       // 4. Send the email
-      await sendReportEmail(email, reportData);
+      await sendReportEmail([email, ...additional], reportData);
       console.log(`📬 Report sent to ${email}`);
     }
 
