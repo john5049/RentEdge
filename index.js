@@ -598,7 +598,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
      day_of_month = VALUES(day_of_month),
      time_of_day = VALUES(time_of_day),
      additional_recipients = VALUES(additional_recipients)`,
-  [userId, frequency, day_of_week, day_of_month, time_of_day, JSON.stringify(recipients)]
+  [userId, frequency, day_of_week, day_of_month, time_of_day, recipients]
     );
 
     res.status(200).json({ message: 'Schedule saved successfully' });
@@ -634,8 +634,6 @@ cron.schedule('* * * * *', async () => {
       FROM report_schedules rs
       JOIN users u ON rs.user_id = u.id
     `);
-
-
 
     const now = moment().tz('America/New_York');
     const currentTime = now.format('HH:mm');
