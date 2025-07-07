@@ -495,7 +495,20 @@ async function fetchZillowEstimates(address) {
 }
 
 async function sendReportEmail(to, properties) {
-const recipientList = Array.isArray(to) ? to.filter(Boolean).join(',') : to;
+let recipients = [];
+
+  if (typeof to === 'string') {
+    recipients = to.split(',').map(email => email.trim()).filter(Boolean);
+  } else if (Array.isArray(to)) {
+    recipients = to.map(email => String(email).trim()).filter(Boolean);
+  }
+
+  if (recipients.length === 0) {
+    console.error('❌ No valid recipients provided');
+    return; // Stop here to avoid crashing the mailer
+  }
+
+  const recipientList = recipients.join(',');
 
 // Calculate totals
   let totalZestimate = 0;
@@ -544,6 +557,7 @@ const recipientList = Array.isArray(to) ? to.filter(Boolean).join(',') : to;
     subject: "RentEdge Property Report",
     html,
   });
+  console.log(`📬 Email sent to: ${recipientList}`);
 }
 
 app.post('/api/reporting/schedule', async (req, res) => {
