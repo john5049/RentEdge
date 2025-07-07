@@ -630,7 +630,7 @@ cron.schedule('* * * * *', async () => {
   try {
     // 1. Get all active report schedules with associated emails
     const [schedules] = await db.promise().query(`
-      SELECT rs.*, u.email AS primary_email
+      SELECT rs.frequency, rs.day_of_week, rs.day_of_month, rs.time_of_day, rs.recipients, rs.user_id, u.email
       FROM report_schedules rs
       JOIN users u ON rs.user_id = u.id
     `);
@@ -641,6 +641,21 @@ cron.schedule('* * * * *', async () => {
     const currentDate = now.date(); // 1–31
 
     for (const schedule of schedules) {
+      const primaryEmail = schedule.email;
+      const additional = (schedule.recipients || "")
+      .split(",")
+      .map(e => e.trim())
+      .filter(e => e.includes("@"));
+
+      const allRecipients = [primaryEmail, ...additional].filter(Boolean);
+
+      console.log("📬 Sending report to:", allRecipients); // confirm it's not undefined
+
+      if (allRecipients.length === 0) {
+        console.warn("⚠️ No valid recipients for user", schedule.user_id);
+        continue;
+      }
+
       const { frequency, day_of_week, day_of_month, time_of_day, user_id, email } = schedule;
 
       const trimmedTime = time_of_day.slice(0, 5); // "HH:mm" from "HH:mm:ss"
@@ -695,19 +710,7 @@ cron.schedule('* * * * *', async () => {
         reportData.push({ address, zestimate: 'N/A', rentZestimate: 'N/A' });
       }
     }
-      const additional = (schedule.recipients || "")
-      .split(",")
-      .map(e => e.trim())
-      .filter(e => e.includes("@"));
-
-      const allRecipients = [email, ...additional];
-
-      console.log("📬 Sending report to:", allRecipients); // confirm it's not undefined
-
-      if (allRecipients.length === 0) {
-        console.warn("⚠️ No valid recipients for user", schedule.user_id);
-        continue;
-      }
+      
 
       // 4. Send the email
       await sendReportEmail(allRecipients, reportData);
