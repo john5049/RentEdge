@@ -701,6 +701,14 @@ cron.schedule('* * * * *', async () => {
       .filter(e => e.includes("@"));
 
       const allRecipients = [email, ...additional];
+
+      console.log("📬 Sending report to:", allRecipients); // confirm it's not undefined
+
+      if (allRecipients.length === 0) {
+        console.warn("⚠️ No valid recipients for user", schedule.user_id);
+        continue;
+      }
+
       // 4. Send the email
       await sendReportEmail(allRecipients, reportData);
       console.log(`📬 Report sent to ${email}`);
