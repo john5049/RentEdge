@@ -630,7 +630,7 @@ cron.schedule('* * * * *', async () => {
   try {
     // 1. Get all active report schedules with associated emails
     const [schedules] = await db.promise().query(`
-      SELECT rs.frequency, rs.day_of_week, rs.day_of_month, rs.time_of_day, rs.recipients, rs.user_id, u.email
+      SELECT rs.frequency, rs.day_of_week, rs.day_of_month, rs.time_of_day, rs.additional_recipients, rs.user_id, u.email
       FROM report_schedules rs
       JOIN users u ON rs.user_id = u.id
     `);
