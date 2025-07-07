@@ -686,8 +686,9 @@ cron.schedule('* * * * *', async () => {
       .map(e => e.trim())
       .filter(e => e.includes("@"));
 
+      const allRecipients = [email, ...additional];
       // 4. Send the email
-      await sendReportEmail([email, ...additional], reportData);
+      await sendReportEmail(allRecipients, reportData);
       console.log(`📬 Report sent to ${email}`);
     }
 
