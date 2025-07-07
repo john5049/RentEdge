@@ -635,6 +635,8 @@ cron.schedule('* * * * *', async () => {
       JOIN users u ON rs.user_id = u.id
     `);
 
+
+
     const now = moment().tz('America/New_York');
     const currentTime = now.format('HH:mm');
     const currentDay = now.format('dddd'); // e.g. "Monday"
@@ -642,7 +644,7 @@ cron.schedule('* * * * *', async () => {
 
     for (const schedule of schedules) {
       const primaryEmail = schedule.email;
-      const additional = (schedule.recipients || "")
+      const additional = (schedule.additional_recipients || "")
       .split(",")
       .map(e => e.trim())
       .filter(e => e.includes("@"));
