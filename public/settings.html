@@ -168,6 +168,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="page-wrapper">
     <div class="navbar">
@@ -254,43 +255,6 @@
       document.getElementById("day-of-month-selector").style.display = selectedFrequency === "monthly" ? "block" : "none";
     });
   });
-
-  async function loadScheduleSettings() {
-    try {
-      const res = await fetch('/api/reporting/schedule');
-      const settings = await res.json();
-
-      if (!settings) return;
-
-      selectedFrequency = settings.frequency || "daily";
-      document.querySelectorAll(".freq-btn").forEach(btn => {
-        btn.classList.toggle("selected", btn.dataset.value === selectedFrequency);
-      });
-
-      if (selectedFrequency === "weekly") {
-        document.getElementById("day-selector").style.display = "block";
-        document.getElementById("day").value = settings.day_of_week || "";
-      } else if (selectedFrequency === "monthly") {
-        document.getElementById("day-of-month-selector").style.display = "block";
-        document.getElementById("monthDay").value = settings.day_of_month === 31 ? "last" : settings.day_of_month || "";
-      }
-
-      document.getElementById("time").value = settings.time_of_day?.slice(0, 5) || "";
-
-      const recipients = Array.isArray(settings.recipients)
-        ? settings.recipients.join(', ')
-        : typeof settings.recipients === 'string'
-          ? JSON.parse(settings.recipients || "[]").join(', ')
-          : "";
-
-      document.getElementById("recipients").value = recipients;
-
-    } catch (err) {
-      console.error("⚠️ Failed to load schedule settings:", err);
-    }
-  }
-
-  loadScheduleSettings();
 
   document.getElementById("save-report-btn").addEventListener("click", async () => {
     const day = document.getElementById("day").value || null;
