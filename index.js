@@ -608,6 +608,38 @@ app.post('/api/reporting/schedule', async (req, res) => {
   }
 });
 
+app.get('/api/reporting/schedule', async (req, res) => {
+  const userId = req.session?.userId || req.user?.id;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const [rows] = await db.promise().query(
+      'SELECT frequency, day_of_week, day_of_month, time_of_day, recipients FROM report_schedules WHERE user_id = ? LIMIT 1',
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(200).json(null); // No schedule yet
+    }
+
+    const schedule = rows[0];
+
+    // Parse recipients if stored as JSON string
+    if (typeof schedule.recipients === 'string') {
+      try {
+        schedule.recipients = JSON.parse(schedule.recipients);
+      } catch {
+        schedule.recipients = [];
+      }
+    }
+
+    res.status(200).json(schedule);
+  } catch (err) {
+    console.error('❌ Error fetching report schedule:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
     db.query(sql, (err, results) => {
