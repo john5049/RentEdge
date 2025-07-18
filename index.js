@@ -340,7 +340,7 @@ app.post('/update-property', async (req, res) => {
 
 app.post('/update-zpid', async (req, res) => {
   const { id, userId, zpid } = req.body;
-
+  console.log('🛠️ ZPID update request:', { id, userId, zpid });
   if (!id || !userId || !zpid) {
     return res.status(400).json({ error: 'Missing required fields' });
   }

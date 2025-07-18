@@ -733,7 +733,7 @@
       alert("ZPID cannot be empty.");
       return;
     }
-
+    console.log('Updating ZPID with:', { id: prop.id, userId, zpid: newZpid });
     const response = await fetch('/update-zpid', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
