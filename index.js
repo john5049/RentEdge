@@ -346,7 +346,7 @@ app.post('/update-zpid', async (req, res) => {
   }
 
   try {
-    const [result] = await db.query(
+    const [result] = await db.promise().query(
       'UPDATE properties SET zpid = ? WHERE id = ? AND userId = ?',
       [zpid, id, userId]
     );
