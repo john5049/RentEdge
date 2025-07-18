@@ -338,6 +338,30 @@ app.post('/update-property', async (req, res) => {
   }
 });
 
+app.post('/update-zpid', async (req, res) => {
+  const { id, userId, zpid } = req.body;
+
+  if (!id || !userId || !zpid) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    const [result] = await db.query(
+      'UPDATE properties SET zpid = ? WHERE id = ? AND user_id = ?',
+      [zpid, id, userId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Property not found or unauthorized' });
+    }
+
+    res.json({ success: true, message: 'ZPID updated successfully' });
+  } catch (err) {
+    console.error('❌ Error updating ZPID:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // Get properties route
 app.get('/properties', (req, res) => {
   const userId = req.query.userId;

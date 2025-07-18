@@ -715,45 +715,42 @@
       let isEditing = false;
 
       editBtn.onclick = async () => {
-        if (!isEditing) {
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.value = property.propertyAddress;
-          input.style.flex = '1';
-          listItem.replaceChild(input, addressSpan);
-          editBtn.textContent = 'Save';
-          isEditing = true;
-        } else {
-          const newAddress = listItem.querySelector('input').value.trim();
-          if (!newAddress) {
-            alert("Address cannot be empty");
-            return;
-          }
+  if (!isEditing) {
+    const zpidInput = document.createElement('input');
+    zpidInput.type = 'text';
+    zpidInput.placeholder = 'Enter new ZPID';
+    zpidInput.value = property.zpid || '';
+    zpidInput.style.flex = '1';
+    zpidInput.style.marginLeft = '10px';
 
-          let zpid = await fetchZpid(newAddress);
-          if (!zpid) {
-            zpid = prompt(`We couldn't find the ZPID for '${property}'. Please enter the ZPID manually:`);
-            if (!zpid) return;
-          }
+    listItem.insertBefore(zpidInput, editBtn);
+    editBtn.textContent = 'Save';
+    isEditing = true;
+  } else {
+    const zpidInput = listItem.querySelector('input[type="text"]');
+    const newZpid = zpidInput.value.trim();
+    if (!newZpid) {
+      alert("ZPID cannot be empty.");
+      return;
+    }
 
-          const response = await fetch('/update-property', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: property.id,
-              userId,
-              propertyAddress: newAddress,
-              zpid
-            })
-          });
+    const response = await fetch('/update-zpid', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: property.id,
+        userId,
+        zpid: newZpid
+      })
+    });
 
-          if (response.ok) {
-            loadProperties();
-          } else {
-            alert("Failed to update property");
-          }
-        }
-      };
+    if (response.ok) {
+      loadProperties();
+    } else {
+      alert("Failed to update ZPID");
+    }
+  }
+};
 
       const deleteBtn = document.createElement('button');
       deleteBtn.textContent = 'Delete';
