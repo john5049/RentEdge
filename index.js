@@ -347,7 +347,7 @@ app.post('/update-zpid', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'UPDATE properties SET zpid = ? WHERE id = ? AND user_id = ?',
+      'UPDATE properties SET zpid = ? WHERE id = ? AND userId = ?',
       [zpid, id, userId]
     );
 
