@@ -585,23 +585,38 @@ let recipients = [];
 }
 
 app.get('/api/reporting/get', async (req, res) => {
-  const userId = req.session?.userId;
-  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  const userId = req.session?.userId || req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   try {
-    const [rows] = await db.promise().query(
-      'SELECT frequency, day_of_week, day_of_month, time_of_day, additional_recipients FROM report_schedules WHERE user_id = ?',
+    const [rows] = await pool.query(
+      `SELECT frequency, day_of_week, day_of_month, time_of_day, recipients
+       FROM report_schedules
+       WHERE user_id = ? LIMIT 1`,
       [userId]
     );
 
     if (rows.length === 0) {
-      return res.status(200).json({});
+      return res.status(404).json({ error: "No schedule found" });
     }
 
-    res.status(200).json(rows[0]);
+    // Parse recipients if it's stored as a JSON string in MySQL
+    const row = rows[0];
+    if (typeof row.recipients === 'string') {
+      try {
+        row.recipients = JSON.parse(row.recipients);
+      } catch {
+        row.recipients = []; // fallback
+      }
+    }
+
+    res.json(row);
   } catch (err) {
-    console.error('❌ Error fetching user schedule:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error("❌ Error fetching report schedule:", err);
+    res.status(500).json({ error: "Failed to fetch report schedule" });
   }
 });
 

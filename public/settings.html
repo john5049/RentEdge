@@ -248,6 +248,7 @@
     try {
       const response = await fetch("/api/reporting/get", { credentials: "include" });
       const result = await response.json();
+      console.log("📥 Schedule data received:", result);
       if (!response.ok) throw new Error(result.error || "Failed to load schedule");
       const { frequency, day_of_week, day_of_month, time_of_day, recipients } = result;
       if (frequency) {
