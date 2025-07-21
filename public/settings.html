@@ -266,10 +266,9 @@
       if (day_of_month !== null) document.getElementById("monthDay").value = day_of_month === 31 ? "last" : String(day_of_month);
       if (time_of_day) document.getElementById("time").value = time_of_day.slice(0, 5);
       if (additional_recipients) {
-        console.log("Recipients are: ", additional_recipients);
         const recipientArray = Array.isArray(additional_recipients)
           ? additional_recipients
-          : JSON.parse(additional_recipients);
+          : additional_recipients.split(',').map(r => r.trim());
 
         document.getElementById("recipients").value = recipientArray.join(', ');
 }
