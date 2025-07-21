@@ -584,6 +584,27 @@ let recipients = [];
   console.log(`📬 Email sent to: ${recipientList}`);
 }
 
+app.get('/api/reporting/get', async (req, res) => {
+  const userId = req.session?.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+  try {
+    const [rows] = await db.promise().query(
+      'SELECT frequency, day_of_week, day_of_month, time_of_day, additional_recipients FROM report_schedules WHERE user_id = ?',
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(200).json({});
+    }
+
+    res.status(200).json(rows[0]);
+  } catch (err) {
+    console.error('❌ Error fetching user schedule:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.post('/api/reporting/schedule', async (req, res) => {
   const { frequency, day_of_week, day_of_month, time_of_day, recipients } = req.body;
   const userId = req.session?.userId || req.user?.id;

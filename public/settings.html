@@ -185,11 +185,9 @@
         </div>
       </div>
     </div>
-
     <div class="content">
       <div class="dashboard-container">
         <h2>📬 Schedule Your Report</h2>
-
         <label>Frequency:</label>
         <div class="frequency-group">
           <button type="button" class="freq-btn selected" data-value="daily">Daily</button>
@@ -197,7 +195,6 @@
           <button type="button" class="freq-btn" data-value="monthly">Monthly</button>
           <button type="button" class="freq-btn" data-value="none">None</button>
         </div>
-
         <div id="day-selector" style="display: none;">
           <label for="day">Send on:</label>
           <select id="day" name="day">
@@ -211,7 +208,6 @@
             <option value="Saturday">Saturday</option>
           </select>
         </div>
-
         <div id="day-of-month-selector" style="display: none;">
           <label for="monthDay">Send on day of the month:</label>
           <select id="monthDay" name="monthDay">
@@ -219,25 +215,19 @@
             <option value="last">Last day of month</option>
           </select>
         </div>
-
         <label for="time">Time:</label>
         <input type="time" id="time" name="time" required />
-
         <label for="recipients">Additional Recipients (comma-separated):</label>
         <input type="text" id="recipients" placeholder="example1@email.com, example2@email.com" />
-
         <button id="save-report-btn">💾 Save Settings</button>
       </div>
     </div>
-
     <footer class="footer">
       © 2025 RentEdge. All rights reserved.
     </footer>
   </div>
-
 <script>
   let selectedFrequency = "daily";
-
   const monthDaySelect = document.getElementById("monthDay");
   for (let i = 1; i <= 31; i++) {
     const option = document.createElement("option");
@@ -245,7 +235,6 @@
     option.text = i;
     monthDaySelect.appendChild(option);
   }
-
   document.querySelectorAll(".freq-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".freq-btn").forEach(b => b.classList.remove("selected"));
@@ -255,7 +244,31 @@
       document.getElementById("day-of-month-selector").style.display = selectedFrequency === "monthly" ? "block" : "none";
     });
   });
-
+  async function loadUserSchedule() {
+    try {
+      const response = await fetch("/api/reporting/get");
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Failed to load schedule");
+      const { frequency, day_of_week, day_of_month, time_of_day, additional_recipients } = result;
+      if (frequency) {
+        document.querySelectorAll(".freq-btn").forEach(btn => {
+          btn.classList.remove("selected");
+          if (btn.dataset.value === frequency) {
+            btn.classList.add("selected");
+            selectedFrequency = frequency;
+          }
+        });
+        document.getElementById("day-selector").style.display = frequency === "weekly" ? "block" : "none";
+        document.getElementById("day-of-month-selector").style.display = frequency === "monthly" ? "block" : "none";
+      }
+      if (day_of_week) document.getElementById("day").value = day_of_week;
+      if (day_of_month !== null) document.getElementById("monthDay").value = day_of_month === 31 ? "last" : String(day_of_month);
+      if (time_of_day) document.getElementById("time").value = time_of_day.slice(0, 5);
+      if (additional_recipients) document.getElementById("recipients").value = additional_recipients;
+    } catch (err) {
+      console.error("Failed to load existing schedule:", err);
+    }
+  }
   document.getElementById("save-report-btn").addEventListener("click", async () => {
     const day = document.getElementById("day").value || null;
     const monthDayRaw = document.getElementById("monthDay").value || null;
@@ -263,9 +276,7 @@
     const time = document.getElementById("time").value;
     const recipientsRaw = document.getElementById("recipients").value.trim();
     const recipients = recipientsRaw ? recipientsRaw.split(',').map(r => r.trim()) : [];
-
     if (selectedFrequency !== "none" && !time) return alert("Please select a time.");
-
     try {
       const response = await fetch("/api/reporting/schedule", {
         method: "POST",
@@ -278,7 +289,6 @@
           recipients
         })
       });
-
       const result = await response.json();
       if (response.ok) {
         alert("✅ Schedule saved!");
@@ -290,6 +300,7 @@
       alert("⚠️ Could not save schedule.");
     }
   });
+  loadUserSchedule();
 </script>
 </body>
 </html>
