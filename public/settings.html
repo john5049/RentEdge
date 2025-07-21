@@ -250,7 +250,7 @@
       const result = await response.json();
       console.log("📥 Schedule data received:", result);
       if (!response.ok) throw new Error(result.error || "Failed to load schedule");
-      const { frequency, day_of_week, day_of_month, time_of_day, recipients } = result;
+      const { frequency, day_of_week, day_of_month, time_of_day, additional_recipients } = result;
       if (frequency) {
         document.querySelectorAll(".freq-btn").forEach(btn => {
           btn.classList.remove("selected");
@@ -265,8 +265,8 @@
       if (day_of_week) document.getElementById("day").value = day_of_week;
       if (day_of_month !== null) document.getElementById("monthDay").value = day_of_month === 31 ? "last" : String(day_of_month);
       if (time_of_day) document.getElementById("time").value = time_of_day.slice(0, 5);
-      if (recipients && Array.isArray(recipients)) {
-        document.getElementById("recipients").value = recipients.join(', ');
+      if (additional_recipients && Array.isArray(additional_recipients)) {
+        document.getElementById("recipients").value = additional_recipients.join(', ');
       }
     } catch (err) {
       console.error("Failed to load existing schedule:", err);
