@@ -265,9 +265,14 @@
       if (day_of_week) document.getElementById("day").value = day_of_week;
       if (day_of_month !== null) document.getElementById("monthDay").value = day_of_month === 31 ? "last" : String(day_of_month);
       if (time_of_day) document.getElementById("time").value = time_of_day.slice(0, 5);
-      if (additional_recipients && Array.isArray(additional_recipients)) {
-        document.getElementById("recipients").value = additional_recipients.join(', ');
-      }
+      if (additional_recipients) {
+        console.log("Recipients are: ", additional_recipients);
+        const recipientArray = Array.isArray(additional_recipients)
+          ? additional_recipients
+          : JSON.parse(additional_recipients);
+
+        document.getElementById("recipients").value = recipientArray.join(', ');
+}
     } catch (err) {
       console.error("Failed to load existing schedule:", err);
     }
