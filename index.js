@@ -606,8 +606,9 @@ app.get('/api/reporting/get', async (req, res) => {
 });
 
 app.post('/api/reporting/schedule', async (req, res) => {
-  const { frequency, day_of_week, day_of_month, time_of_day, recipients, userId } = req.body;
+  const { frequency, day_of_week, day_of_month, time_of_day, recipients } = req.body;
   //const userId = req.session?.userId || req.user?.id;
+  const userId = req.session.userId
 
   console.log("Incoming request:");
   console.log("userId:", userId);
