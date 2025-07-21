@@ -593,7 +593,7 @@ app.get('/api/reporting/get', async (req, res) => {
 
   try {
     const [rows] = await db.promise().query(
-      `SELECT frequency, day_of_week, day_of_month, time_of_day, recipients
+      `SELECT frequency, day_of_week, day_of_month, time_of_day, additional_recipients
        FROM report_schedules
        WHERE user_id = ?
        LIMIT 1`,
