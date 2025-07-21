@@ -588,35 +588,37 @@ app.get('/api/reporting/get', async (req, res) => {
   const userId = req.session?.userId || req.user?.id;
 
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
     const [rows] = await pool.promise().query(
       `SELECT frequency, day_of_week, day_of_month, time_of_day, recipients
        FROM report_schedules
-       WHERE user_id = ? LIMIT 1`,
+       WHERE user_id = ?
+       LIMIT 1`,
       [userId]
     );
 
     if (rows.length === 0) {
-      return res.status(404).json({ error: "No schedule found" });
+      return res.status(404).json({ error: 'No report schedule found' });
     }
 
-    // Parse recipients if it's stored as a JSON string in MySQL
-    const row = rows[0];
-    if (typeof row.recipients === 'string') {
+    const schedule = rows[0];
+
+    // Safely parse recipients if stored as a JSON string
+    if (typeof schedule.recipients === 'string') {
       try {
-        row.recipients = JSON.parse(row.recipients);
+        schedule.recipients = JSON.parse(schedule.recipients);
       } catch {
-        row.recipients = []; // fallback
+        schedule.recipients = [];
       }
     }
 
-    res.json(row);
+    res.json(schedule);
   } catch (err) {
-    console.error("❌ Error fetching report schedule:", err);
-    res.status(500).json({ error: "Failed to fetch report schedule" });
+    console.error('❌ Error fetching report schedule:', err);
+    res.status(500).json({ error: 'Failed to fetch report schedule' });
   }
 });
 
