@@ -592,7 +592,7 @@ app.get('/api/reporting/get', async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.promise().query(
+    const [rows] = await db.promise().query(
       `SELECT frequency, day_of_week, day_of_month, time_of_day, recipients
        FROM report_schedules
        WHERE user_id = ?
