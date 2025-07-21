@@ -246,7 +246,9 @@
   });
   async function loadUserSchedule() {
     try {
-      const response = await fetch("/api/reporting/get");
+      const response = await fetch("/api/reporting/get",{
+        credentials: "include"
+      });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Failed to load schedule");
       const { frequency, day_of_week, day_of_month, time_of_day, additional_recipients } = result;
@@ -281,6 +283,7 @@
       const response = await fetch("/api/reporting/schedule", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           frequency: selectedFrequency,
           day_of_week: selectedFrequency === "weekly" ? day : null,
