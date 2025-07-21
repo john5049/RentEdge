@@ -651,6 +651,8 @@ app.post('/api/reporting/schedule', async (req, res) => {
       return res.status(200).json({ message: 'Report schedule deleted' });
     }
 
+    const recipientsCsv = Array.isArray(additional_recipients) ? additional_recipients.join(',') : '';
+
     // Insert new schedule
     await db.promise().query(
       `INSERT INTO report_schedules (user_id, frequency, day_of_week, day_of_month, time_of_day, additional_recipients)
@@ -661,7 +663,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
      day_of_month = VALUES(day_of_month),
      time_of_day = VALUES(time_of_day),
      additional_recipients = VALUES(additional_recipients)`,
-  [userId, frequency, day_of_week, day_of_month, time_of_day, recipients]
+  [userId, frequency, day_of_week, day_of_month, time_of_day, recipientsCsv]
     );
 
     res.status(200).json({ message: 'Schedule saved successfully' });
