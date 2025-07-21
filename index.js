@@ -607,11 +607,11 @@ app.get('/api/reporting/get', async (req, res) => {
     const schedule = rows[0];
 
     // Safely parse recipients if stored as a JSON string
-    if (typeof schedule.recipients === 'string') {
+    if (typeof schedule.additional_recipients === 'string') {
       try {
-        schedule.recipients = JSON.parse(schedule.recipients);
+        schedule.additional_recipients = JSON.parse(schedule.additional_recipients);
       } catch {
-        schedule.recipients = [];
+        schedule.additional_recipients = [];
       }
     }
 
