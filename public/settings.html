@@ -246,7 +246,7 @@
   });
   async function loadUserSchedule() {
     try {
-      const response = await fetch("/api/reporting/get", { credentials: "include" });
+      const response = await fetch("/api/reporting/get");
       const result = await response.json();
       console.log("📥 Schedule data received:", result);
       if (!response.ok) throw new Error(result.error || "Failed to load schedule");
@@ -271,7 +271,7 @@
           ? additional_recipients
           : additional_recipients.split(',').map(r => r.trim());
 
-        document.getElementById("recipients").value = recipientArray.join(', ');
+        document.getElementById("recipients").value = data.additional_recipients?.join(', ') || "";
 }
     } catch (err) {
       console.error("Failed to load existing schedule:", err);
