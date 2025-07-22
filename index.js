@@ -651,7 +651,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
       return res.status(200).json({ message: 'Report schedule deleted' });
     }
 
-    const recipientsCsv = Array.isArray(additional_recipients) ? additional_recipients.join(',') : '';
+    const recipientsCsv = Array.isArray(recipients) ? recipients.join(',') : '';
 
     // Insert new schedule
     await db.promise().query(
