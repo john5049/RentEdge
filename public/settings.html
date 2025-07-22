@@ -278,36 +278,38 @@
     }
   }
   document.getElementById("save-report-btn").addEventListener("click", async () => {
-    const day = document.getElementById("day").value || null;
-    const monthDayRaw = document.getElementById("monthDay").value || null;
-    const dayOfMonth = (monthDayRaw === "last") ? 31 : parseInt(monthDayRaw) || null;
-    const time = document.getElementById("time").value;
-    const recipientsRaw = document.getElementById("recipients").value.trim();
-    const recipients = recipientsRaw ? recipientsRaw.split(',').map(r => r.trim()) : [];
-    if (selectedFrequency !== "none" && !time) return alert("Please select a time.");
-    try {
-      const response = await fetch("/api/reporting/schedule", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          frequency: selectedFrequency,
-          day_of_week: selectedFrequency === "weekly" ? day : null,
-          day_of_month: selectedFrequency === "monthly" ? dayOfMonth : null,
-          time_of_day: time + ":00",
-          additional_recipients: recipientArray
-        })
-      });
-      const result = await response.json();
-      if (response.ok) {
-        alert("✅ Schedule saved!");
-      } else {
-        alert("❌ " + result.error);
-      }
-    } catch (err) {
-      console.error(err);
-      alert("⚠️ Could not save schedule.");
+  const day = document.getElementById("day").value || null;
+  const monthDayRaw = document.getElementById("monthDay").value || null;
+  const dayOfMonth = (monthDayRaw === "last") ? 31 : parseInt(monthDayRaw) || null;
+  const time = document.getElementById("time").value;
+  const recipientsRaw = document.getElementById("recipients").value.trim();
+  const recipientArray = recipientsRaw ? recipientsRaw.split(',').map(r => r.trim()) : [];
+
+  if (selectedFrequency !== "none" && !time) return alert("Please select a time.");
+
+  try {
+    const response = await fetch("/api/reporting/schedule", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        frequency: selectedFrequency,
+        day_of_week: selectedFrequency === "weekly" ? day : null,
+        day_of_month: selectedFrequency === "monthly" ? dayOfMonth : null,
+        time_of_day: time + ":00",
+        additional_recipients: recipientArray
+      })
+    });
+    const result = await response.json();
+    if (response.ok) {
+      alert("✅ Schedule saved!");
+    } else {
+      alert("❌ " + result.error);
     }
-  });
+  } catch (err) {
+    console.error(err);
+    alert("⚠️ Could not save schedule.");
+  }
+});
   loadUserSchedule();
 </script>
 </body>
