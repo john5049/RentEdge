@@ -251,6 +251,7 @@
       console.log("📥 Schedule data received:", result);
       if (!response.ok) throw new Error(result.error || "Failed to load schedule");
       const { frequency, day_of_week, day_of_month, time_of_day, additional_recipients } = result;
+      console.log(JSON.stringify(req.body, null, 2));
       if (frequency) {
         document.querySelectorAll(".freq-btn").forEach(btn => {
           btn.classList.remove("selected");
@@ -293,7 +294,7 @@
           day_of_week: selectedFrequency === "weekly" ? day : null,
           day_of_month: selectedFrequency === "monthly" ? dayOfMonth : null,
           time_of_day: time + ":00",
-          recipients
+          additional_recipients: recipientArray
         })
       });
       const result = await response.json();
