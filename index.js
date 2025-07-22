@@ -623,7 +623,7 @@ app.get('/api/reporting/get', async (req, res) => {
 });
 
 app.post('/api/reporting/schedule', async (req, res) => {
-  const { frequency, day_of_week, day_of_month, time_of_day, recipients } = req.body;
+  const { frequency, day_of_week, day_of_month, time_of_day, additional_recipients } = req.body;
   //const userId = req.session?.userId || req.user?.id;
   const userId = req.session.userId
 
@@ -651,7 +651,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
       return res.status(200).json({ message: 'Report schedule deleted' });
     }
 
-    const recipientsCsv = Array.isArray(recipients) ? recipients.join(',') : '';
+    const recipientsCsv = Array.isArray(additional_recipients) ? additional_recipients.join(',') : '';
 
     // Insert new schedule
     await db.promise().query(
