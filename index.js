@@ -633,7 +633,7 @@ app.post('/api/reporting/schedule', async (req, res) => {
   console.log("time_of_day:", time_of_day);
   console.log("day_of_week:", day_of_week);
   console.log("day_of_month:", day_of_month);
-  console.log("recipients:", recipients);
+  console.log("recipients:", additional_recipients);
 
   if (!userId || !frequency || !time_of_day) {
     return res.status(400).json({ error: 'Missing required fields' });
