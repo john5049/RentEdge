@@ -498,6 +498,15 @@ app.post('/validate-address', async (req, res) => {
   }
 });
 
+function generateCSV(data) {
+  if (!data.length) return '';
+  const headers = Object.keys(data[0]);
+  const rows = data.map(row =>
+    headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`).join(',')
+  );
+  return `${headers.join(',')}\n${rows.join('\n')}`;
+}
+
 async function fetchZillowEstimates(address) {
   const endpoint = `https://api.bridgedataoutput.com/property/v2/zestimate?address=${encodeURIComponent(address)}&access_token=${ZILLOW_API_KEY}`;
 
@@ -519,7 +528,7 @@ async function fetchZillowEstimates(address) {
 }
 
 async function sendReportEmail(to, properties) {
-let recipients = [];
+  let recipients = [];
 
   if (typeof to === 'string') {
     recipients = to.split(',').map(email => email.trim()).filter(Boolean);
@@ -529,12 +538,12 @@ let recipients = [];
 
   if (recipients.length === 0) {
     console.error('❌ No valid recipients provided');
-    return; // Stop here to avoid crashing the mailer
+    return;
   }
 
   const recipientList = recipients.join(',');
 
-// Calculate totals
+  // Totals
   let totalZestimate = 0;
   let totalRentZestimate = 0;
 
@@ -548,7 +557,7 @@ let recipients = [];
   const totalZFormatted = `$${totalZestimate.toLocaleString()}`;
   const totalRFormatted = `$${totalRentZestimate.toLocaleString()}/mo`;
 
-  // Generate table rows
+  // Table
   const rows = properties.map(p => `
     <tr>
       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
@@ -557,7 +566,6 @@ let recipients = [];
     </tr>
   `).join('');
 
-  // HTML Email Template
   const html = `
     <p><strong>Total Property Value:</strong> ${totalZFormatted}</p>
     <p><strong>Total Monthly Rent Estimate:</strong> ${totalRFormatted}</p>
@@ -573,14 +581,23 @@ let recipients = [];
     </table>
   `;
 
-  console.log("Sending report to:", recipientList);
+  // CSV Attachment
+  const csv = generateCSV(properties);
+  const csvBuffer = Buffer.from(csv, 'utf-8');
 
+  // Email
   await transporter.sendMail({
     from: '"RentEdge Reports" <your-email@example.com>',
     to: recipientList,
     subject: "RentEdge Property Report",
     html,
+    attachments: [{
+      filename: 'rentedge-report.csv',
+      content: csvBuffer,
+      contentType: 'text/csv'
+    }]
   });
+
   console.log(`📬 Email sent to: ${recipientList}`);
 }
 
@@ -778,7 +795,10 @@ cron.schedule('* * * * *', async () => {
       
 
       // 4. Send the email
-      await sendReportEmail(allRecipients, reportData);
+      const csv = generateCSV(reportData);
+      const csvBuffer = Buffer.from(csv, 'utf-8');
+
+      await sendReportEmail(allRecipients, reportData, csvBuffer);
       console.log(`📬 Report sent to ${email}`);
     }
 
