@@ -271,7 +271,7 @@
           ? additional_recipients
           : additional_recipients.split(',').map(r => r.trim());
 
-        document.getElementById("recipients").value = data.additional_recipients?.join(', ') || "";
+        document.getElementById("recipients").value = recipientArray.join(', ');
 }
     } catch (err) {
       console.error("Failed to load existing schedule:", err);
