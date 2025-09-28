@@ -255,11 +255,23 @@ app.post('/api/feature-request', async (req, res) => {
 });
 
 // USPS Token Route
-app.post('/token', async (req,res) => {
-      console.log('Attempt to access token');
-      token = await getAccessToken();
-      console.log('✅ USPS Access Token:', token);
-})
+// app.post('/token', async (req,res) => {
+//       console.log('Attempt to access token');
+//       token = await getAccessToken();
+//       console.log('✅ USPS Access Token:', token);
+// })
+
+app.post('/token', async (req, res) => {
+  try {
+    console.log('Attempt to access token');
+    token = await getAccessToken();
+    console.log('✅ USPS Access Token:', token);
+    res.status(200).json({ token }); // ✅ send it back
+  } catch (err) {
+    console.error('❌ Error fetching token:', err);
+    res.status(500).json({ error: 'Failed to get USPS token' });
+  }
+});
 
 // Logout Route
 app.get('/logout', (req, res) => {
