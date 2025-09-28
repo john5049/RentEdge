@@ -17,17 +17,41 @@ const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
 const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const REFRESH_TOKEN = process.env.GMAIL_REFRESH_TOKEN;
+
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
 const cron = require('node-cron');
 const moment = require('moment-timezone');
 
 
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: 'john@akridgeenterprises.com',
-    pass: 'kdigndhcupbaazpb'
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   service: 'Gmail',
+//   auth: {
+//     user: 'john@akridgeenterprises.com',
+//     pass: 'kdigndhcupbaazpb'
+//   }
+// });
+
+async function createTransporter() {
+  const accessToken = await oAuth2Client.getAccessToken();
+
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: 'john@akridgeenterprises.com',
+      clientId: GOOGLE_ID,
+      clientSecret: GOOGLE_SEC,
+      refreshToken: REFRESH_TOKEN,
+      accessToken: accessToken.token
+    }
+  });
+}
 
 var token = null;
 
