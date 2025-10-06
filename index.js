@@ -8,6 +8,8 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
+const {Resend} = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
@@ -16,18 +18,18 @@ const PORT = process.env.PORT;
 const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
 const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
-const nodemailer = require('nodemailer');
+//const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const moment = require('moment-timezone');
 
 
-const transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: 'john@akridgeenterprises.com',
-    pass: 'kdigndhcupbaazpb'
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   service: 'Gmail',
+//   auth: {
+//     user: 'john@akridgeenterprises.com',
+//     pass: 'kdigndhcupbaazpb'
+//   }
+// });
 
 var token = null;
 
@@ -181,20 +183,27 @@ app.post('/request-password-reset', async (req, res) => {
     const resetLink = `https://www.rentedge.net/reset-password.html?token=${token}`;
 
     // Set up mailer
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'john@akridgeenterprises.com',
-        pass: 'kdigndhcupbaazpb' // or use environment variables
-      }
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: 'Gmail',
+    //   auth: {
+    //     user: 'john@akridgeenterprises.com',
+    //     pass: 'kdigndhcupbaazpb' // or use environment variables
+    //   }
+    // });
 
-    await transporter.sendMail({
-      from: 'john@akridgeenterprises.com',
+    // await transporter.sendMail({
+    //   from: 'john@akridgeenterprises.com',
+    //   to: email,
+    //   subject: 'Reset your password',
+    //   html: `<p>Click the link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`
+    // });
+
+    await resend.emails.send({
+      from: 'RentEdge Support <support@akridgeenterprises.com>',
       to: email,
       subject: 'Reset your password',
       html: `<p>Click the link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`
-    });
+  });
 
     res.json({ message: 'Check your email for a password reset link.' });
   } catch (err) {
@@ -246,7 +255,13 @@ app.post('/api/feature-request', async (req, res) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
+    await resend.emails.send({
+      from: 'RentEdge Feature Requests <reports@akridgeenterprises.com>',
+      to: 'john@akridgeenterprises.com',
+      subject: `New Feature Request from ${user}`,
+      text: message
+    });
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error sending feature request email:', error);
@@ -527,6 +542,79 @@ async function fetchZillowEstimates(address) {
   }
 }
 
+// async function sendReportEmail(to, properties) {
+//   let recipients = [];
+
+//   if (typeof to === 'string') {
+//     recipients = to.split(',').map(email => email.trim()).filter(Boolean);
+//   } else if (Array.isArray(to)) {
+//     recipients = to.map(email => String(email).trim()).filter(Boolean);
+//   }
+
+//   if (recipients.length === 0) {
+//     console.error('❌ No valid recipients provided');
+//     return;
+//   }
+
+//   const recipientList = recipients.join(',');
+
+//   // Totals
+//   let totalZestimate = 0;
+//   let totalRentZestimate = 0;
+
+//   properties.forEach(p => {
+//     const z = Number(String(p.zestimate).replace(/[^0-9.-]+/g, ""));
+//     const r = Number(String(p.rentZestimate).replace(/[^0-9.-]+/g, ""));
+//     if (!isNaN(z)) totalZestimate += z;
+//     if (!isNaN(r)) totalRentZestimate += r;
+//   });
+
+//   const totalZFormatted = `$${totalZestimate.toLocaleString()}`;
+//   const totalRFormatted = `$${totalRentZestimate.toLocaleString()}/mo`;
+
+//   // Table
+//   const rows = properties.map(p => `
+//     <tr>
+//       <td style="padding:10px;border:1px solid #ddd;">${p.address}</td>
+//       <td style="padding:10px;border:1px solid #ddd;">${p.zestimate}</td>
+//       <td style="padding:10px;border:1px solid #ddd;">${p.rentZestimate}</td>
+//     </tr>
+//   `).join('');
+
+//   const html = `
+//     <p><strong>Total Property Value:</strong> ${totalZFormatted}</p>
+//     <p><strong>Total Monthly Rent Estimate:</strong> ${totalRFormatted}</p>
+//     <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
+//       <thead>
+//         <tr style="background-color: #4CAF50; color: white;">
+//           <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
+//           <th style="padding: 10px; border: 1px solid #ddd;">Zestimate</th>
+//           <th style="padding: 10px; border: 1px solid #ddd;">Rent Zestimate</th>
+//         </tr>
+//       </thead>
+//       <tbody>${rows}</tbody>
+//     </table>
+//   `;
+
+//   // CSV Attachment
+//   const csv = generateCSV(properties);
+//   const csvBuffer = Buffer.from(csv, 'utf-8');
+
+//   // Email
+//   await transporter.sendMail({
+//     from: '"RentEdge Reports" <your-email@example.com>',
+//     to: recipientList,
+//     subject: "RentEdge Property Report",
+//     html,
+//     attachments: [{
+//       filename: 'rentedge-report.csv',
+//       content: csvBuffer,
+//       contentType: 'text/csv'
+//     }]
+//   });
+
+//   console.log(`📬 Email sent to: ${recipientList}`);
+// }
 async function sendReportEmail(to, properties) {
   let recipients = [];
 
@@ -581,24 +669,28 @@ async function sendReportEmail(to, properties) {
     </table>
   `;
 
-  // CSV Attachment
+  // CSV attachment
   const csv = generateCSV(properties);
   const csvBuffer = Buffer.from(csv, 'utf-8');
 
-  // Email
-  await transporter.sendMail({
-    from: '"RentEdge Reports" <your-email@example.com>',
-    to: recipientList,
-    subject: "RentEdge Property Report",
-    html,
-    attachments: [{
-      filename: 'rentedge-report.csv',
-      content: csvBuffer,
-      contentType: 'text/csv'
-    }]
-  });
+  try {
+    await resend.emails.send({
+      from: 'RentEdge Reports <reports@yourdomain.com>', // 👈 must be verified domain in Resend
+      to: recipients,
+      subject: 'RentEdge Property Report',
+      html,
+      attachments: [
+        {
+          filename: 'rentedge-report.csv',
+          content: csvBuffer.toString('base64'),
+        },
+      ],
+    });
 
-  console.log(`📬 Email sent to: ${recipientList}`);
+    console.log(`📬 Report sent to ${recipientList}`);
+  } catch (err) {
+    console.error('❌ Failed to send report email:', err);
+  }
 }
 
 app.get('/api/reporting/get', async (req, res) => {
