@@ -687,7 +687,7 @@ async function sendReportEmail(to, properties) {
 
   try {
     await resend.emails.send({
-      from: 'RentEdge Reports <reports@yourdomain.com>', // 👈 must be verified domain in Resend
+      from: 'RentEdge Reports <reports@akridgeenterprises.com>', // 👈 must be verified domain in Resend
       to: recipients,
       subject: 'RentEdge Property Report',
       html,
