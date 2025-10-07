@@ -199,7 +199,7 @@ app.post('/request-password-reset', async (req, res) => {
     // });
 
     await resend.emails.send({
-      from: 'RentEdge Support <support@akridgeenterprises.com>',
+      from: 'RentEdge Support <support@rentedge.net>',
       to: email,
       subject: 'Reset your password',
       html: `<p>Click the link to reset your password:</p><a href="${resetLink}">${resetLink}</a>`
@@ -248,7 +248,7 @@ app.post('/api/feature-request', async (req, res) => {
   const { user, message } = req.body;
 
   const mailOptions = {
-    from: 'john@akridgeenterprises.com',
+    from: 'request@rentedge.net',
     to: 'john@akridgeenterprises.com',
     subject: `New Feature Request from ${user}`,
     text: message,
@@ -257,7 +257,7 @@ app.post('/api/feature-request', async (req, res) => {
   try {
     // await transporter.sendMail(mailOptions);
     await resend.emails.send({
-      from: 'RentEdge Feature Requests <reports@akridgeenterprises.com>',
+      from: 'RentEdge Feature Requests <reports@rentedge.net>',
       to: 'john@akridgeenterprises.com',
       subject: `New Feature Request from ${user}`,
       text: message
@@ -687,7 +687,7 @@ async function sendReportEmail(to, properties) {
 
   try {
     await resend.emails.send({
-      from: 'RentEdge Reports <reports@akridgeenterprises.com>', // 👈 must be verified domain in Resend
+      from: 'RentEdge Reports <reports@rentedge.net>', // 👈 must be verified domain in Resend
       to: recipients,
       subject: 'RentEdge Property Report',
       html,
