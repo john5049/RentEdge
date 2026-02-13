@@ -930,9 +930,14 @@ for (const p of properties) {
   });
 }
 
+function getStreetNumber(address) {
+  const match = address.trim().match(/^(\d+)/);
+  return match ? parseInt(match[1], 10) : Number.MAX_SAFE_INTEGER;
+}
+
 // Sort property data
 reportData.sort((a, b) =>
-  a.address.localeCompare(b.address, 'en', { sensitivity: 'base' })
+  getStreetNumber(a.address) - getStreetNumber(b.address)
 );
 
 
