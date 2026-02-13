@@ -885,35 +885,50 @@ cron.schedule('* * * * *', async () => {
 
       // 3. Query Zillow API for each property
       const reportData = [];
-      for (const p of properties) {
+for (const p of properties) {
       const address = p.propertyAddress;
       const zpid = p.zpid;
 
       const zillowData = await fetchZillowData(zpid);
 
-      let zestimate = p.last_zestimate;
-      let rentZestimate = p.last_rent_zestimate;
-      
-      if (zillowData) {
-        //const { zestimate, rentalZestimate } = zillowData;
-        if (zillowData.zestimate !== null && zillowData.zestimate !== undefined) {
-              zestimate = zillowData.zestimate;
-            }
+      // Fallback to previous values
+      let finalZestimate = p.last_zestimate;
+      let finalRentZestimate = p.last_rent_zestimate;
 
-        if (zillowData.rentalZestimate !== null && zillowData.rentalZestimate !== undefined) {
-          rentZestimate = zillowData.rentalZestimate;
-            }
-
-        reportData.push({
-          generatedAt,
-          address: p.propertyAddress,
-          zestimate: zestimate ? `$${zestimate.toLocaleString()}` : 'N/A',
-          rentZestimate: rentalZestimate ? `$${rentalZestimate.toLocaleString()}/mo` : 'N/A'
-        });
-      } else {
-        reportData.push({ address, zestimate: 'N/A', rentZestimate: 'N/A' });
-      }
+  if (zillowData) {
+    if (zillowData.zestimate != null) {
+      finalZestimate = zillowData.zestimate;
     }
+
+    if (zillowData.rentalZestimate != null) {
+      finalRentZestimate = zillowData.rentalZestimate;
+    }
+
+    // ✅ UPDATE DB ONLY WITH VALID VALUES
+    await db.promise().query(
+      `UPDATE properties
+       SET last_zestimate = COALESCE(?, last_zestimate),
+           last_rent_zestimate = COALESCE(?, last_rent_zestimate)
+       WHERE zpid = ?`,
+      [
+        zillowData.zestimate ?? null,
+        zillowData.rentalZestimate ?? null,
+        zpid
+      ]
+    );
+  }
+
+  reportData.push({
+    generatedAt,
+    address,
+    zestimate: finalZestimate
+      ? `$${Number(finalZestimate).toLocaleString()}`
+      : 'N/A',
+    rentZestimate: finalRentZestimate
+      ? `$${Number(finalRentZestimate).toLocaleString()}/mo`
+      : 'N/A'
+  });
+}
       
 
       // 4. Send the email
