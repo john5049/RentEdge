@@ -872,7 +872,7 @@ cron.schedule('* * * * *', async () => {
 
       // 2. Fetch properties for this user
       const [properties] = await db.promise().query(
-        'SELECT propertyAddress, zpid FROM properties WHERE userId = ?', [user_id]
+        'SELECT propertyAddress, zpid, last_zestimate, last_rent_zestimate FROM properties WHERE userId = ?', [user_id]
       );
 
       if (!properties.length) {
@@ -890,12 +890,23 @@ cron.schedule('* * * * *', async () => {
       const zpid = p.zpid;
 
       const zillowData = await fetchZillowData(zpid);
+
+      let zestimate = p.last_zestimate;
+      let rentZestimate = p.last_rent_zestimate;
       
       if (zillowData) {
-        const { zestimate, rentalZestimate } = zillowData;
+        //const { zestimate, rentalZestimate } = zillowData;
+        if (zillowData.zestimate !== null && zillowData.zestimate !== undefined) {
+              zestimate = zillowData.zestimate;
+            }
+
+        if (zillowData.rentalZestimate !== null && zillowData.rentalZestimate !== undefined) {
+          rentZestimate = zillowData.rentalZestimate;
+            }
+
         reportData.push({
           generatedAt,
-          address,
+          address: p.propertyAddress,
           zestimate: zestimate ? `$${zestimate.toLocaleString()}` : 'N/A',
           rentZestimate: rentalZestimate ? `$${rentalZestimate.toLocaleString()}/mo` : 'N/A'
         });
