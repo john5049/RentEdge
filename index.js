@@ -15,11 +15,11 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const PORT = process.env.PORT;
 
-//const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
-//const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
+const client_id = 'JVa1jJ4an57MEsyxFhTZZ2uKCi22aElruLuMD9fqM8JpDhGg';
+const client_secret = 'QsCXM36RhZ0KrjxuXtWfZ515KMqRRRtVM0FAZqmtnkJeSJGbw5UPT8U9CYiFhZto';
 
-const client_id = 'JKiOlcyaWYAO9B5IJphq';
-const client_secret = 'SZPrNANU2Q5jGRW1dEkNjjAeF1Fyo9o8LIqDxSie';
+//const client_id = 'JKiOlcyaWYAO9B5IJphq';
+//const client_secret = 'SZPrNANU2Q5jGRW1dEkNjjAeF1Fyo9o8LIqDxSie';
 
 //const nodemailer = require('nodemailer');
 const cron = require('node-cron');
