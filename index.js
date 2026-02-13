@@ -929,15 +929,20 @@ for (const p of properties) {
       : 'N/A'
   });
 }
-      
 
-      // 4. Send the email
-      const csv = generateCSV(reportData);
-      const csvBuffer = Buffer.from(csv, 'utf-8');
+// Sort property data
+reportData.sort((a, b) =>
+  a.address.localeCompare(b.address, 'en', { sensitivity: 'base' })
+);
 
-      await sendReportEmail(allRecipients, reportData, csvBuffer);
-      console.log(`📬 Report sent to ${email}`);
-    }
+
+    // 4. Send the email
+    const csv = generateCSV(reportData);
+    const csvBuffer = Buffer.from(csv, 'utf-8');
+
+    await sendReportEmail(allRecipients, reportData, csvBuffer);
+    console.log(`📬 Report sent to ${email}`);
+  }
 
   } catch (err) {
     console.error('❌ Error running report job:', err);
