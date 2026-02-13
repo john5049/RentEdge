@@ -880,6 +880,9 @@ cron.schedule('* * * * *', async () => {
         continue;
       }
 
+      // Generate Date stamp
+      const generatedAt = moment().tz('America/New_York').format('YYYY-MM-DD');
+
       // 3. Query Zillow API for each property
       const reportData = [];
       for (const p of properties) {
@@ -891,6 +894,7 @@ cron.schedule('* * * * *', async () => {
       if (zillowData) {
         const { zestimate, rentalZestimate } = zillowData;
         reportData.push({
+          generatedAt,
           address,
           zestimate: zestimate ? `$${zestimate.toLocaleString()}` : 'N/A',
           rentZestimate: rentalZestimate ? `$${rentalZestimate.toLocaleString()}/mo` : 'N/A'
