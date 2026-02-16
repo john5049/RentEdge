@@ -919,15 +919,15 @@ for (const p of properties) {
   }
 
   reportData.push({
-    generatedAt,
-    address,
-    zestimate: finalZestimate
-      ? `$${Number(finalZestimate).toLocaleString()}`
-      : 'N/A',
-    rentZestimate: finalRentZestimate
-      ? `$${Number(finalRentZestimate).toLocaleString()}/mo`
-      : 'N/A'
-  });
+  generatedAt,
+  address,
+  zestimate: finalZestimate != null
+    ? Number(finalZestimate)
+    : '',
+  rentZestimate: finalRentZestimate != null
+    ? Number(finalRentZestimate)
+    : ''
+});
 }
 
 function getStreetNumber(address) {
