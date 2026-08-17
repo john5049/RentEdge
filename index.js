@@ -812,6 +812,73 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
+// ---------------- Houston County court-search integration ----------------
+// This endpoint does NOT bypass reCAPTCHA or call the court site directly.
+// A small browser helper (provided separately) captures the results only after
+// the user completes Houston County's normal human-verification flow.
+function stripHtml(value = '') {
+  return String(value)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractHref(value = '') {
+  const match = String(value).match(/href=["']([^"']+)["']/i);
+  if (!match) return null;
+  try {
+    return new URL(match[1], 'https://court.houstoncountyga.org').href;
+  } catch {
+    return null;
+  }
+}
+
+app.post('/api/court-search/results', (req, res) => {
+  if (!req.session?.userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { searchedName = '', records = [] } = req.body || {};
+  if (!Array.isArray(records)) {
+    return res.status(400).json({ error: 'records must be an array' });
+  }
+
+  const normalized = records.map((row) => {
+    // Supports both the raw Benchmark DataTables shape ("0".."5") and the
+    // already-normalized shape produced by the Chrome helper.
+    if (row && (Object.prototype.hasOwnProperty.call(row, '0') || Object.prototype.hasOwnProperty.call(row, '1'))) {
+      return {
+        name: stripHtml(row['1']),
+        partyType: stripHtml(row['2']),
+        caseNumber: stripHtml(row['3']),
+        status: stripHtml(row['4']),
+        courtType: stripHtml(row['5']),
+        caseUrl: extractHref(row['3'])
+      };
+    }
+
+    return {
+      name: stripHtml(row?.name),
+      partyType: stripHtml(row?.partyType),
+      caseNumber: stripHtml(row?.caseNumber),
+      status: stripHtml(row?.status),
+      courtType: stripHtml(row?.courtType),
+      caseUrl: row?.caseUrl || null
+    };
+  }).filter(r => r.name || r.caseNumber || r.courtType);
+
+  return res.json({
+    searchedName: stripHtml(searchedName),
+    count: normalized.length,
+    records: normalized
+  });
+});
+
 // Cron job: runs every minute
 cron.schedule('* * * * *', async () => {
   console.log(`⏰ Cron job running at ${new Date().toLocaleString()}`);

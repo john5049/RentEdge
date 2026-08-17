@@ -580,6 +580,72 @@
     }
   }
 
+  /* Tenant Court Search */
+.court-search-container {
+  margin: 0 20px 25px 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.court-search-container h1 { text-align: center; }
+.court-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.court-search-form input {
+  min-width: 220px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+.court-search-button {
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #4CAF50;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+.court-search-button:hover { background: #45a049; }
+.court-search-status {
+  text-align: center;
+  margin: 10px 0 16px;
+  color: #555;
+}
+.court-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.court-results-table th,
+.court-results-table td {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 9px 8px;
+  text-align: left;
+  font-size: 14px;
+}
+.court-results-table th { background: #f5f7fa; }
+.court-case-link { color: #2673c9; text-decoration: none; font-weight: 600; }
+.court-case-link:hover { text-decoration: underline; }
+.court-helper-note {
+  max-width: 850px;
+  margin: 0 auto 15px auto;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #666;
+  text-align: center;
+}
+
+
 </style>
 
 
@@ -635,6 +701,20 @@
     <h1>Market Valuation</h1>
     <ul id="analytics-list" style="list-style: none; padding: 0; margin-top: 20px; margin-bottom: 10px;"></ul>
    </div>
+</div>
+
+<div class="court-search-container" id="court-search">
+  <h1>Tenant Court Search</h1>
+  <div class="court-search-form">
+    <input id="court-first-name" type="text" placeholder="First name">
+    <input id="court-last-name" type="text" placeholder="Last name">
+    <button class="court-search-button" onclick="startHoustonCountySearch()">Search Houston County</button>
+  </div>
+  <div class="court-helper-note">
+    Houston County requires human verification. RentEdge opens the official court-search page for you; complete the CAPTCHA there. If the RentEdge Court Helper extension is installed, the returned cases will appear here automatically.
+  </div>
+  <div id="court-search-status" class="court-search-status">Enter a prospective tenant's name to begin.</div>
+  <div id="court-results"></div>
 </div>
 
 <button class="donate-button" onclick="openDonationModal()">💖 Donate</button>
@@ -1340,6 +1420,98 @@ async function submitFeatureRequest() {
     alert('Error sending request.');
   }
 }
+
+// ---------------- Houston County tenant court search ----------------
+let pendingCourtSearchName = '';
+
+function startHoustonCountySearch() {
+  const firstName = document.getElementById('court-first-name').value.trim();
+  const lastName = document.getElementById('court-last-name').value.trim();
+  const status = document.getElementById('court-search-status');
+
+  if (!firstName || !lastName) {
+    status.textContent = 'Please enter both first and last name.';
+    return;
+  }
+
+  pendingCourtSearchName = `${lastName}, ${firstName}`;
+  sessionStorage.setItem('pendingCourtSearchName', pendingCourtSearchName);
+  status.textContent = `Complete Houston County's human verification for ${firstName} ${lastName}. Results will return here automatically if the Court Helper is installed.`;
+
+  // Open the official Houston County search. We intentionally do not attempt
+  // to automate or bypass the site's reCAPTCHA.
+  window.open(
+    'https://court.houstoncountyga.org/BenchmarkWeb/Home.aspx/Search',
+    'HoustonCountyCourtSearch',
+    'width=1180,height=820,resizable=yes,scrollbars=yes'
+  );
+}
+
+async function receiveCourtResults(detail) {
+  const status = document.getElementById('court-search-status');
+  try {
+    const searchedName = detail?.searchedName || sessionStorage.getItem('pendingCourtSearchName') || '';
+    const records = Array.isArray(detail?.records) ? detail.records : [];
+
+    const response = await fetch('/api/court-search/results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ searchedName, records })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Unable to process court results');
+
+    renderCourtResults(data.records || []);
+    status.textContent = `${data.count} case${data.count === 1 ? '' : 's'} found for ${data.searchedName || 'the selected name'}.`;
+  } catch (err) {
+    console.error('Court search import error:', err);
+    status.textContent = 'Court results were received, but RentEdge could not process them.';
+  }
+}
+
+function renderCourtResults(records) {
+  const container = document.getElementById('court-results');
+  if (!records.length) {
+    container.innerHTML = '<p style="text-align:center;">No matching cases were returned.</p>';
+    return;
+  }
+
+  const rows = records.map(r => {
+    const caseCell = r.caseUrl
+      ? `<a class="court-case-link" href="${escapeHtml(r.caseUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(r.caseNumber || 'Open case')}</a>`
+      : escapeHtml(r.caseNumber || '');
+
+    return `<tr>
+      <td>${escapeHtml(r.name || '')}</td>
+      <td>${escapeHtml(r.partyType || '')}</td>
+      <td>${caseCell}</td>
+      <td>${escapeHtml(r.status || '')}</td>
+      <td>${escapeHtml(r.courtType || '')}</td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `<table class="court-results-table">
+    <thead><tr><th>Name</th><th>Party Type</th><th>Case Number</th><th>Status</th><th>Court Type</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// The Chrome helper dispatches this DOM event after a user-completed
+// Houston County search. This keeps the CAPTCHA human-operated while letting
+// RentEdge receive the legitimate results automatically.
+window.addEventListener('rentedge-court-results', (event) => {
+  receiveCourtResults(event.detail || {});
+});
 
   </script>
 
