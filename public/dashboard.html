@@ -1084,7 +1084,16 @@ async function processCSV(text) {
             
 
         } catch (err) {
-          alert('Unable to validate the address. Please enter ZPID manually');
+          //alert('Unable to validate the address. Please enter ZPID manually');
+          console.error('Address validation failed:', err);
+          zpid = prompt(
+            'Unable to validate the address. Please enter the ZPID manually:'
+        );
+
+        if (zpid) {
+            zpid = zpid.trim();
+        }
+
         }
         
         //zpid = prompt("We couldn't find this property automatically. Please enter the ZPID manually:");
