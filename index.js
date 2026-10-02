@@ -659,7 +659,7 @@ async function sendReportEmail(to, properties) {
 
   const totalZFormatted = `$${totalZestimate.toLocaleString()}`;
   const totalRFormatted = `$${totalRentZestimate.toLocaleString()}/mo`;
-
+  const numberOfProperties = properties.length;
   // Table
   const rows = properties.map(p => `
     <tr>
@@ -670,6 +670,7 @@ async function sendReportEmail(to, properties) {
   `).join('');
 
   const html = `
+    <p><strong>Number of Properties:</strong> ${numberOfProperties}</p>
     <p><strong>Total Property Value:</strong> ${totalZFormatted}</p>
     <p><strong>Total Monthly Rent Estimate:</strong> ${totalRFormatted}</p>
     <table style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">
